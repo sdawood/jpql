@@ -1,7 +1,15 @@
+var util = require('util');
 var assert = require('assert');
 var jp = require('../');
+var traverse = require('traverse');
+var data = require('./data/deep-store.json');
 
-var data = require('./data/store.json');
+function log() {
+  var args = Array.prototype.slice.call(arguments);
+  args.forEach(function(arg, index) {
+    console.log(util.inspect(arg, false, null));
+  });
+}
 
 suite('jsonpath#query', function() {
 
@@ -10,61 +18,33 @@ suite('jsonpath#query', function() {
     assert.deepEqual(results, [ { path: ['$', 'store'], value: data.store } ]);
   });
 
-  test('[X] - authors of all books in the store', function() {
-    var results = jp.nodes(data, '$.store.book[*][author.1,author.2,author.3]');
-    paths = [ { expression: { type: 'root', value: '$' } },
-      { expression: { type: 'identifier', value: 'store' },
-        scope: 'child',
-        operation: 'member' },
-      { expression: { type: 'identifier', value: 'book' },
-        scope: 'child',
-        operation: 'member' },
-      { expression: { type: 'wildcard', value: '*' },
-        scope: 'child',
-        operation: 'subscript' },
-      { expression:
-      { type: 'union',
-        value:
-          [ { expression: { type: 'identifier', value: 'author' },
-            branch:
-            { path:
-              [ { expression: { type: 'numeric_literal', value: 1 },
-                scope: 'child|branch',
-                operation: 'member' } ],
-              scope: 'branch' } },
-            { expression: { type: 'identifier', value: 'author' },
-              branch:
-              { path:
-                [ { expression: { type: 'numeric_literal', value: 2 },
-                  scope: 'child|branch',
-                  operation: 'member' } ],
-                scope: 'branch' } },
-            { expression: { type: 'identifier', value: 'author' },
-              branch:
-              { path:
-                [ { expression: { type: 'numeric_literal', value: 3 },
-                  scope: 'child|branch',
-                  operation: 'member' } ],
-                scope: 'branch' } } ] },
-        scope: 'child',
-        operation: 'subscript' } ]
-
-
+  test('authors of all books in the store', function() {
+    var results = jp.nodes(data, '$.store.book[*].author..name');
     assert.deepEqual(results, [
-//      { path: ['$', 'store', 'book', 0, 'author'], value: 'Nigel Rees' },
-      { path: ['$', 'store', 'book', 1, 'author'], value: 'Evelyn Waugh' },
-      { path: ['$', 'store', 'book', 2, 'author'], value: 'Herman Melville' },
-      { path: ['$', 'store', 'book', 3, 'author'], value: 'J. R. R. Tolkien' }
+      { path: ['$', 'store', 'book', 0, 'author', 0, 'profile', 'name'], value: 'Nigel Rees' },
+      { path: ['$', 'store', 'book', 1, 'author', 0, 'profile', 'name'], value: 'Evelyn Waugh' },
+      { path: ['$', 'store', 'book', 2, 'author', 0, 'profile', 'name'], value: 'Herman Melville' },
+      { path: ['$', 'store', 'book', 3, 'author', 0, 'profile', 'name'], value: 'J. R. R. Tolkien' }
+    ]);
+  });
+
+  test('[Y] authors of all books in the store via branches', function() {
+    var results = jp.nodes(data, '$.store.book[*][0.author..name,1.author..name,2.author..name,3.author..name]');
+    assert.deepEqual(results, [
+      { path: ['$', 'store', 'book', 0, 'author', 0, 'profile', 'name'], value: 'Nigel Rees' },
+      { path: ['$', 'store', 'book', 1, 'author', 0, 'profile', 'name'], value: 'Evelyn Waugh' },
+      { path: ['$', 'store', 'book', 2, 'author', 0, 'profile', 'name'], value: 'Herman Melville' },
+      { path: ['$', 'store', 'book', 3, 'author', 0, 'profile', 'name'], value: 'J. R. R. Tolkien' }
     ]);
   });
 
   test('all authors', function() {
     var results = jp.nodes(data, '$..author');
     assert.deepEqual(results, [
-      { path: ['$', 'store', 'book', 0, 'author'], value: 'Nigel Rees' },
-      { path: ['$', 'store', 'book', 1, 'author'], value: 'Evelyn Waugh' },
-      { path: ['$', 'store', 'book', 2, 'author'], value: 'Herman Melville' },
-      { path: ['$', 'store', 'book', 3, 'author'], value: 'J. R. R. Tolkien' }
+      { path: ['$', 'store', 'book', 0, 'author'], value: data.store.book[0].author },
+      { path: ['$', 'store', 'book', 1, 'author'], value: data.store.book[1].author },
+      { path: ['$', 'store', 'book', 2, 'author'], value: data.store.book[2].author },
+      { path: ['$', 'store', 'book', 3, 'author'], value: data.store.book[3].author }
     ]);
   });
 
@@ -136,20 +116,20 @@ suite('jsonpath#query', function() {
       { path: [ '$', 'store', 'book', 2 ], value: data.store.book[2] },
       { path: [ '$', 'store', 'book', 3 ], value: data.store.book[3] },
       { path: [ '$', 'store', 'book', 0, 'category' ], value: 'reference' },
-      { path: [ '$', 'store', 'book', 0, 'author' ], value: 'Nigel Rees' },
+      { path: [ '$', 'store', 'book', 0, 'author' ], value: data.store.book[0].author },
       { path: [ '$', 'store', 'book', 0, 'title' ], value: 'Sayings of the Century' },
       { path: [ '$', 'store', 'book', 0, 'price' ], value: 8.95 },
       { path: [ '$', 'store', 'book', 1, 'category' ], value: 'fiction' },
-      { path: [ '$', 'store', 'book', 1, 'author' ], value: 'Evelyn Waugh' },
+      { path: [ '$', 'store', 'book', 1, 'author' ], value: data.store.book[1].author },
       { path: [ '$', 'store', 'book', 1, 'title' ], value: 'Sword of Honour' },
       { path: [ '$', 'store', 'book', 1, 'price' ], value: 12.99 },
       { path: [ '$', 'store', 'book', 2, 'category' ], value: 'fiction' },
-      { path: [ '$', 'store', 'book', 2, 'author' ], value: 'Herman Melville' },
+      { path: [ '$', 'store', 'book', 2, 'author' ], value: data.store.book[2].author },
       { path: [ '$', 'store', 'book', 2, 'title' ], value: 'Moby Dick' },
       { path: [ '$', 'store', 'book', 2, 'isbn' ], value: '0-553-21311-3' },
       { path: [ '$', 'store', 'book', 2, 'price' ], value: 8.99 },
       { path: [ '$', 'store', 'book', 3, 'category' ], value: 'fiction' },
-      { path: [ '$', 'store', 'book', 3, 'author' ], value: 'J. R. R. Tolkien' },
+      { path: [ '$', 'store', 'book', 3, 'author' ], value: data.store.book[3].author },
       { path: [ '$', 'store', 'book', 3, 'title' ], value: 'The Lord of the Rings' },
       { path: [ '$', 'store', 'book', 3, 'isbn' ], value: '0-395-19395-8' },
       { path: [ '$', 'store', 'book', 3, 'price' ], value: 22.99 },
@@ -178,9 +158,34 @@ suite('jsonpath#query', function() {
     assert.deepEqual(results, [ { path: [ '$', 'store', 'book', 0 ], value: data.store.book[0] } ]);
   });
 
-  test('descendant numeric literal gets first element', function() {
+  test('[X :: Circular Reference Case ] descendant numeric literal gets first element', function() {
     var results = jp.nodes(data, '$.store.book..0');
-    assert.deepEqual(results, [ { path: [ '$', 'store', 'book', 0 ], value: data.store.book[0] } ]);
+    /** demonestrates a case of circular reference since book[0].athuor[0] is included twice, shoulw be extracted as $ref
+     *  - traverse doesn't detect a circular reference since the reference is not a direct parent of the node but a leaf of a sibling */
+    assert.deepEqual(results, [ { path: [ '$', 'store', 'book', 0 ],
+      value:
+      { category: 'reference',
+        author:
+          [ { profile: { name: 'Nigel Rees', twitter: '@NigelRees' },
+            rating: 4 } ],
+        title: 'Sayings of the Century',
+        price: 8.95 } },
+      { path: [ '$', 'store', 'book', 0, 'author', 0 ],
+        value:
+        { profile: { name: 'Nigel Rees', twitter: '@NigelRees' },
+          rating: 4 } },
+      { path: [ '$', 'store', 'book', 1, 'author', 0 ],
+        value:
+        { profile: { name: 'Evelyn Waugh', twitter: '@EvelynWaugh' },
+          rating: 4 } },
+      { path: [ '$', 'store', 'book', 2, 'author', 0 ],
+        value:
+        { profile: { name: 'Herman Melville', twitter: '@Herman Melville' },
+          rating: 4 } },
+      { path: [ '$', 'store', 'book', 3, 'author', 0 ],
+        value:
+        { profile: { name: 'J. R. R. Tolkien', twitter: '@J. R. R. Tolkien' },
+          rating: 4 } } ]);
   });
 
   test('root element gets us original obj', function() {
