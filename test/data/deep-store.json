@@ -1,0 +1,56 @@
+{ "store": {
+    "book": [ 
+      { "category": "reference",
+        "author": [
+          {
+          "profile": {
+            "name": "Nigel Rees",
+            "twitter": "@NigelRees"
+          },
+          "rating" : 4
+        }],
+        "title": "Sayings of the Century",
+        "price": 8.95
+      },
+      { "category": "fiction",
+        "author": [{
+          "profile": {
+            "name":"Evelyn Waugh",
+            "twitter": "@EvelynWaugh"
+          },
+          "rating" : 4
+        }],
+        "title": "Sword of Honour",
+        "price": 12.99
+      },
+      { "category": "fiction",
+        "author": [{
+          "profile": {
+            "name":"Herman Melville",
+            "twitter": "@Herman Melville"
+          },
+          "rating" : 4
+        }],
+        "title": "Moby Dick",
+        "isbn": "0-553-21311-3",
+        "price": 8.99
+      },
+      { "category": "fiction",
+        "author": [{
+          "profile": {
+            "name": "J. R. R. Tolkien",
+            "twitter": "@J. R. R. Tolkien"
+          },
+          "rating" : 4
+        }],
+        "title": "The Lord of the Rings",
+        "isbn": "0-395-19395-8",
+        "price": 22.99
+      }
+    ],
+    "bicycle": {
+      "color": "red",
+      "price": 19.95
+    }
+  }
+}

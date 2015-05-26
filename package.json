@@ -1,0 +1,40 @@
+{
+  "name": "jsonpathql",
+  "description": "jsonpath query language engine",
+  "version": "0.0.1",
+  "author": "shaady@sdawood.com",
+  "scripts": {
+    "test": "mocha -u tdd test && jscs lib && jshint lib"
+  },
+  "dependencies": {
+    "esprima": "^2.2.0",
+    "lodash": "^3.9.1",
+    "static-eval": "0.2.3",
+    "traverse": "^0.6.6"
+  },
+  "devDependencies": {
+    "chai": "^2.3.0",
+    "jscs": "1.10.0",
+    "jshint": "2.6.0",
+    "mocha": "2.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sdawood/jsonpathql"
+  },
+  "keywords": [
+    "jpql",
+    "JSONPath",
+    "jsonPath",
+    "jsonpath",
+    "json-path",
+    "object",
+    "traversal",
+    "json",
+    "path",
+    "data structures",
+    "graphql",
+    "jsong"
+  ],
+  "license": "MIT"
+}
