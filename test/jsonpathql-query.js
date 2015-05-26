@@ -535,9 +535,53 @@ suite('jsonpath#query', function() {
   });
 
   test('[X] branch out and in via active index, single subscript and subscript list branch cases', function() {
-    log(jp.parse('$..book[[*].author.profile.name,[author[0],author[1]].profile.name,[title,author[1].profile.name]]'));
-    var results = jp.nodes(data, '$..book[[*].author.profile.name,[author[0],author[1]].profile.name,[title,author[1].profile.name]]');
-    assert.deepEqual(results, [false]);
+    var results = jp.nodes(data, '$..book[.author,[author][0].profile.name,.author[0].profile.name]');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          0,
+          "author"
+        ],
+        "value": [
+          {
+            "profile": {
+              "name": "Nigel Rees",
+              "twitter": "@NigelRees"
+            },
+            "rating": 4
+          }
+        ]
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          1,
+          "author",
+          0,
+          "profile",
+          "name"
+        ],
+        "value": "Evelyn Waugh"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          2,
+          "author",
+          0,
+          "profile",
+          "name"
+        ],
+        "value": "Herman Melville"
+      }
+    ]);
   });
 
   test('root element gets us original obj', function() {
