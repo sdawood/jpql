@@ -28,8 +28,8 @@ suite('jsonpath#query', function() {
     ]);
   });
 
-  test('[Y] authors of all books in the store via branches', function() {
-    var results = jp.nodes(data, '$.store.book[*][0.author..name,1.author..name,2.author..name,3.author..name]');
+  test('[Y] authors of all books in the store via STAR followed by subscript', function() {
+    var results = jp.nodes(data, '$..*[author]..name');
     assert.deepEqual(results, [
       { path: ['$', 'store', 'book', 0, 'author', 0, 'profile', 'name'], value: 'Nigel Rees' },
       { path: ['$', 'store', 'book', 1, 'author', 0, 'profile', 'name'], value: 'Evelyn Waugh' },
@@ -38,15 +38,110 @@ suite('jsonpath#query', function() {
     ]);
   });
 
-  test('all authors', function() {
-    var results = jp.nodes(data, '$..author');
+  test('[Y] all books [author,title] via subscript expression with leading * (loose structure matching)', function() {
+    var results = jp.nodes(data, '$..*[author,title]');
     assert.deepEqual(results, [
       { path: ['$', 'store', 'book', 0, 'author'], value: data.store.book[0].author },
+      { path: ['$', 'store', 'book', 0, 'title'], value: data.store.book[0].title },
       { path: ['$', 'store', 'book', 1, 'author'], value: data.store.book[1].author },
+      { path: ['$', 'store', 'book', 1, 'title'], value: data.store.book[1].title },
       { path: ['$', 'store', 'book', 2, 'author'], value: data.store.book[2].author },
-      { path: ['$', 'store', 'book', 3, 'author'], value: data.store.book[3].author }
+      { path: ['$', 'store', 'book', 2, 'title'], value: data.store.book[2].title },
+      { path: ['$', 'store', 'book', 3, 'author'], value: data.store.book[3].author },
+      { path: ['$', 'store', 'book', 3, 'title'], value: data.store.book[3].title }
     ]);
   });
+
+  test('[Y] authors of all books in the store via branches', function() {
+    var results = jp.nodes(data, '$.store.book[0.author..name,1.author..name,2.author..name,3.author..name]');
+    assert.deepEqual(results, [
+      { path: ['$', 'store', 'book', 0, 'author', 0, 'profile', 'name'], value: 'Nigel Rees' },
+      { path: ['$', 'store', 'book', 1, 'author', 0, 'profile', 'name'], value: 'Evelyn Waugh' },
+      { path: ['$', 'store', 'book', 2, 'author', 0, 'profile', 'name'], value: 'Herman Melville' },
+      { path: ['$', 'store', 'book', 3, 'author', 0, 'profile', 'name'], value: 'J. R. R. Tolkien' }
+    ]);
+  });
+
+  test('[Y] selective branches via nested branches', function() {
+    log(jp.parse('$.store.book[0..[..name,..twitter],1..[..name,..twitter]]'));
+    var results = jp.nodes(data, '$.store.book[0..[..name,..twitter],1..[..name,..twitter]]');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          0,
+          "author",
+          0,
+          "profile",
+          "name"
+        ],
+        "value": "Nigel Rees"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          0,
+          "author",
+          0,
+          "profile",
+          "twitter"
+        ],
+        "value": "@NigelRees"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          1,
+          "author",
+          0,
+          "profile",
+          "name"
+        ],
+        "value": "Evelyn Waugh"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          1,
+          "author",
+          0,
+          "profile",
+          "twitter"
+        ],
+        "value": "@EvelynWaugh"
+      }
+    ]);
+  });
+
+
+
+  test('[Y] all books with [isbn,title] via subscript expression with leading * strict structure matching via filter', function() {
+    var results = jp.nodes(data, '$..*[?(@.isbn && @.title)][isbn,title]');
+    assert.deepEqual(results, [
+      { path: ['$', 'store', 'book', 2, 'isbn'], value: data.store.book[2].isbn },
+      { path: ['$', 'store', 'book', 2, 'title'], value: data.store.book[2].title },
+      { path: ['$', 'store', 'book', 3, 'isbn'], value: data.store.book[3].isbn },
+      { path: ['$', 'store', 'book', 3, 'title'], value: data.store.book[3].title }
+    ]);
+  });
+
+//  test('[X] all books with [isbn,title] via subscript expression with leading * (strict structure matching) via $has filter', function() {
+//    var results = jp.nodes(data, '$..*[?($has("isbn", "title"))][isbn,title]');
+//    assert.deepEqual(results, [
+//      { path: ['$', 'store', 'book', 2, 'isbn'], value: data.store.book[2].isbn },
+//      { path: ['$', 'store', 'book', 2, 'title'], value: data.store.book[2].title },
+//      { path: ['$', 'store', 'book', 3, 'isbn'], value: data.store.book[3].isbn },
+//      { path: ['$', 'store', 'book', 3, 'title'], value: data.store.book[3].title }
+//    ]);
+//  });
 
   test('all things in store', function() {
     var results = jp.nodes(data, '$.store.*');
@@ -158,7 +253,7 @@ suite('jsonpath#query', function() {
     assert.deepEqual(results, [ { path: [ '$', 'store', 'book', 0 ], value: data.store.book[0] } ]);
   });
 
-  test('[X :: Circular Reference Case ] descendant numeric literal gets first element', function() {
+  test('[X] * Circular Reference Case descendant numeric literal gets first element', function() {
     var results = jp.nodes(data, '$.store.book..0');
     /** demonestrates a case of circular reference since book[0].athuor[0] is included twice, shoulw be extracted as $ref
      *  - traverse doesn't detect a circular reference since the reference is not a direct parent of the node but a leaf of a sibling */
