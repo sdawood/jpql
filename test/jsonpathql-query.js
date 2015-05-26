@@ -203,34 +203,190 @@ suite('jsonpath#query', function() {
     var results = jp.nodes(data, '$..*');
 
     assert.deepEqual(results, [
-      { path: [ '$', 'store' ], value: data.store },
-      { path: [ '$', 'store', 'book' ], value: data.store.book },
-      { path: [ '$', 'store', 'bicycle' ], value: data.store.bicycle },
-      { path: [ '$', 'store', 'book', 0 ], value: data.store.book[0] },
-      { path: [ '$', 'store', 'book', 1 ], value: data.store.book[1] },
-      { path: [ '$', 'store', 'book', 2 ], value: data.store.book[2] },
-      { path: [ '$', 'store', 'book', 3 ], value: data.store.book[3] },
-      { path: [ '$', 'store', 'book', 0, 'category' ], value: 'reference' },
-      { path: [ '$', 'store', 'book', 0, 'author' ], value: data.store.book[0].author },
-      { path: [ '$', 'store', 'book', 0, 'title' ], value: 'Sayings of the Century' },
+      { path: [ '$', 'store' ],
+      value:
+      { book:
+        [ { category: 'reference',
+          author:
+            [ { profile: { name: 'Nigel Rees', twitter: '@NigelRees' },
+              rating: 4 } ],
+          title: 'Sayings of the Century',
+          price: 8.95 },
+          { category: 'fiction',
+            author:
+              [ { profile: { name: 'Evelyn Waugh', twitter: '@EvelynWaugh' },
+                rating: 4 } ],
+            title: 'Sword of Honour',
+            price: 12.99 },
+          { category: 'fiction',
+            author:
+              [ { profile: { name: 'Herman Melville', twitter: '@Herman Melville' },
+                rating: 4 } ],
+            title: 'Moby Dick',
+            isbn: '0-553-21311-3',
+            price: 8.99 },
+          { category: 'fiction',
+            author:
+              [ { profile: { name: 'J. R. R. Tolkien', twitter: '@J. R. R. Tolkien' },
+                rating: 4 } ],
+            title: 'The Lord of the Rings',
+            isbn: '0-395-19395-8',
+            price: 22.99 } ],
+        bicycle: { color: 'red', price: 19.95 } } },
+      { path: [ '$', 'store', 'book' ],
+        value:
+          [ { category: 'reference',
+            author:
+              [ { profile: { name: 'Nigel Rees', twitter: '@NigelRees' },
+                rating: 4 } ],
+            title: 'Sayings of the Century',
+            price: 8.95 },
+            { category: 'fiction',
+              author:
+                [ { profile: { name: 'Evelyn Waugh', twitter: '@EvelynWaugh' },
+                  rating: 4 } ],
+              title: 'Sword of Honour',
+              price: 12.99 },
+            { category: 'fiction',
+              author:
+                [ { profile: { name: 'Herman Melville', twitter: '@Herman Melville' },
+                  rating: 4 } ],
+              title: 'Moby Dick',
+              isbn: '0-553-21311-3',
+              price: 8.99 },
+            { category: 'fiction',
+              author:
+                [ { profile: { name: 'J. R. R. Tolkien', twitter: '@J. R. R. Tolkien' },
+                  rating: 4 } ],
+              title: 'The Lord of the Rings',
+              isbn: '0-395-19395-8',
+              price: 22.99 } ] },
+      { path: [ '$', 'store', 'bicycle' ],
+        value: { color: 'red', price: 19.95 } },
+      { path: [ '$', 'store', 'book', 0 ],
+        value:
+        { category: 'reference',
+          author:
+            [ { profile: { name: 'Nigel Rees', twitter: '@NigelRees' },
+              rating: 4 } ],
+          title: 'Sayings of the Century',
+          price: 8.95 } },
+      { path: [ '$', 'store', 'book', 1 ],
+        value:
+        { category: 'fiction',
+          author:
+            [ { profile: { name: 'Evelyn Waugh', twitter: '@EvelynWaugh' },
+              rating: 4 } ],
+          title: 'Sword of Honour',
+          price: 12.99 } },
+      { path: [ '$', 'store', 'book', 2 ],
+        value:
+        { category: 'fiction',
+          author:
+            [ { profile: { name: 'Herman Melville', twitter: '@Herman Melville' },
+              rating: 4 } ],
+          title: 'Moby Dick',
+          isbn: '0-553-21311-3',
+          price: 8.99 } },
+      { path: [ '$', 'store', 'book', 3 ],
+        value:
+        { category: 'fiction',
+          author:
+            [ { profile: { name: 'J. R. R. Tolkien', twitter: '@J. R. R. Tolkien' },
+              rating: 4 } ],
+          title: 'The Lord of the Rings',
+          isbn: '0-395-19395-8',
+          price: 22.99 } },
+      { path: [ '$', 'store', 'book', 0, 'category' ],
+        value: 'reference' },
+      { path: [ '$', 'store', 'book', 0, 'author' ],
+        value:
+          [ { profile: { name: 'Nigel Rees', twitter: '@NigelRees' },
+            rating: 4 } ] },
+      { path: [ '$', 'store', 'book', 0, 'title' ],
+        value: 'Sayings of the Century' },
       { path: [ '$', 'store', 'book', 0, 'price' ], value: 8.95 },
-      { path: [ '$', 'store', 'book', 1, 'category' ], value: 'fiction' },
-      { path: [ '$', 'store', 'book', 1, 'author' ], value: data.store.book[1].author },
-      { path: [ '$', 'store', 'book', 1, 'title' ], value: 'Sword of Honour' },
+      { path: [ '$', 'store', 'book', 0, 'author', 0 ],
+        value:
+        { profile: { name: 'Nigel Rees', twitter: '@NigelRees' },
+          rating: 4 } },
+      { path: [ '$', 'store', 'book', 0, 'author', 0, 'profile' ],
+        value: { name: 'Nigel Rees', twitter: '@NigelRees' } },
+      { path: [ '$', 'store', 'book', 0, 'author', 0, 'rating' ],
+        value: 4 },
+      { path: [ '$', 'store', 'book', 0, 'author', 0, 'profile', 'name' ],
+        value: 'Nigel Rees' },
+      { path: [ '$', 'store', 'book', 0, 'author', 0, 'profile', 'twitter' ],
+        value: '@NigelRees' },
+      { path: [ '$', 'store', 'book', 1, 'category' ],
+        value: 'fiction' },
+      { path: [ '$', 'store', 'book', 1, 'author' ],
+        value:
+          [ { profile: { name: 'Evelyn Waugh', twitter: '@EvelynWaugh' },
+            rating: 4 } ] },
+      { path: [ '$', 'store', 'book', 1, 'title' ],
+        value: 'Sword of Honour' },
       { path: [ '$', 'store', 'book', 1, 'price' ], value: 12.99 },
-      { path: [ '$', 'store', 'book', 2, 'category' ], value: 'fiction' },
-      { path: [ '$', 'store', 'book', 2, 'author' ], value: data.store.book[2].author },
-      { path: [ '$', 'store', 'book', 2, 'title' ], value: 'Moby Dick' },
-      { path: [ '$', 'store', 'book', 2, 'isbn' ], value: '0-553-21311-3' },
+      { path: [ '$', 'store', 'book', 1, 'author', 0 ],
+        value:
+        { profile: { name: 'Evelyn Waugh', twitter: '@EvelynWaugh' },
+          rating: 4 } },
+      { path: [ '$', 'store', 'book', 1, 'author', 0, 'profile' ],
+        value: { name: 'Evelyn Waugh', twitter: '@EvelynWaugh' } },
+      { path: [ '$', 'store', 'book', 1, 'author', 0, 'rating' ],
+        value: 4 },
+      { path: [ '$', 'store', 'book', 1, 'author', 0, 'profile', 'name' ],
+        value: 'Evelyn Waugh' },
+      { path: [ '$', 'store', 'book', 1, 'author', 0, 'profile', 'twitter' ],
+        value: '@EvelynWaugh' },
+      { path: [ '$', 'store', 'book', 2, 'category' ],
+        value: 'fiction' },
+      { path: [ '$', 'store', 'book', 2, 'author' ],
+        value:
+          [ { profile: { name: 'Herman Melville', twitter: '@Herman Melville' },
+            rating: 4 } ] },
+      { path: [ '$', 'store', 'book', 2, 'title' ],
+        value: 'Moby Dick' },
+      { path: [ '$', 'store', 'book', 2, 'isbn' ],
+        value: '0-553-21311-3' },
       { path: [ '$', 'store', 'book', 2, 'price' ], value: 8.99 },
-      { path: [ '$', 'store', 'book', 3, 'category' ], value: 'fiction' },
-      { path: [ '$', 'store', 'book', 3, 'author' ], value: data.store.book[3].author },
-      { path: [ '$', 'store', 'book', 3, 'title' ], value: 'The Lord of the Rings' },
-      { path: [ '$', 'store', 'book', 3, 'isbn' ], value: '0-395-19395-8' },
+      { path: [ '$', 'store', 'book', 2, 'author', 0 ],
+        value:
+        { profile: { name: 'Herman Melville', twitter: '@Herman Melville' },
+          rating: 4 } },
+      { path: [ '$', 'store', 'book', 2, 'author', 0, 'profile' ],
+        value: { name: 'Herman Melville', twitter: '@Herman Melville' } },
+      { path: [ '$', 'store', 'book', 2, 'author', 0, 'rating' ],
+        value: 4 },
+      { path: [ '$', 'store', 'book', 2, 'author', 0, 'profile', 'name' ],
+        value: 'Herman Melville' },
+      { path: [ '$', 'store', 'book', 2, 'author', 0, 'profile', 'twitter' ],
+        value: '@Herman Melville' },
+      { path: [ '$', 'store', 'book', 3, 'category' ],
+        value: 'fiction' },
+      { path: [ '$', 'store', 'book', 3, 'author' ],
+        value:
+          [ { profile: { name: 'J. R. R. Tolkien', twitter: '@J. R. R. Tolkien' },
+            rating: 4 } ] },
+      { path: [ '$', 'store', 'book', 3, 'title' ],
+        value: 'The Lord of the Rings' },
+      { path: [ '$', 'store', 'book', 3, 'isbn' ],
+        value: '0-395-19395-8' },
       { path: [ '$', 'store', 'book', 3, 'price' ], value: 22.99 },
+      { path: [ '$', 'store', 'book', 3, 'author', 0 ],
+        value:
+        { profile: { name: 'J. R. R. Tolkien', twitter: '@J. R. R. Tolkien' },
+          rating: 4 } },
+      { path: [ '$', 'store', 'book', 3, 'author', 0, 'profile' ],
+        value: { name: 'J. R. R. Tolkien', twitter: '@J. R. R. Tolkien' } },
+      { path: [ '$', 'store', 'book', 3, 'author', 0, 'rating' ],
+        value: 4 },
+      { path: [ '$', 'store', 'book', 3, 'author', 0, 'profile', 'name' ],
+        value: 'J. R. R. Tolkien' },
+      { path: [ '$', 'store', 'book', 3, 'author', 0, 'profile', 'twitter' ],
+        value: '@J. R. R. Tolkien' },
       { path: [ '$', 'store', 'bicycle', 'color' ], value: 'red' },
-      { path: [ '$', 'store', 'bicycle', 'price' ], value: 19.95 }
-    ]);
+      { path: [ '$', 'store', 'bicycle', 'price' ], value: 19.95 } ]);
   });
 
   test('all elements via subscript wildcard', function() {
@@ -281,6 +437,107 @@ suite('jsonpath#query', function() {
         value:
         { profile: { name: 'J. R. R. Tolkien', twitter: '@J. R. R. Tolkien' },
           rating: 4 } } ]);
+  });
+
+  test('[X] branches via active index', function() {
+    log(jp.parse('$..book[[*],[title,price],[title,price]]'));
+    var results = jp.nodes(data, '$..book[[*],[title,price],[title,price]]');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          0,
+          "category"
+        ],
+        "value": "reference"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          0,
+          "author"
+        ],
+        "value": [
+          {
+            "profile": {
+              "name": "Nigel Rees",
+              "twitter": "@NigelRees"
+            },
+            "rating": 4
+          }
+        ]
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          0,
+          "title"
+        ],
+        "value": "Sayings of the Century"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          0,
+          "price"
+        ],
+        "value": 8.95
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          1,
+          "title"
+        ],
+        "value": "Sword of Honour"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          1,
+          "price"
+        ],
+        "value": 12.99
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          2,
+          "title"
+        ],
+        "value": "Moby Dick"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          2,
+          "price"
+        ],
+        "value": 8.99
+      }
+    ]);
+  });
+
+  test('[X] branch out and in via active index, single subscript and subscript list branch cases', function() {
+    log(jp.parse('$..book[[*].author.profile.name,[author[0],author[1]].profile.name,[title,author[1].profile.name]]'));
+    var results = jp.nodes(data, '$..book[[*].author.profile.name,[author[0],author[1]].profile.name,[title,author[1].profile.name]]');
+    assert.deepEqual(results, [false]);
   });
 
   test('root element gets us original obj', function() {
