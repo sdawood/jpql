@@ -439,7 +439,7 @@ suite('jsonpath#query', function() {
           rating: 4 } } ]);
   });
 
-  test('[X] branches via active index', function() {
+  test('[Y] branches via active index', function() {
     log(jp.parse('$..book[[*],[title,price],[title,price]]'));
     var results = jp.nodes(data, '$..book[[*],[title,price],[title,price]]');
     assert.deepEqual(results, [
@@ -532,6 +532,35 @@ suite('jsonpath#query', function() {
         "value": 8.99
       }
     ]);
+  });
+
+  test('[X] branches with good old script expression', function() {
+    log(jp.parse('$..book.0[("title")]'));
+    var results = jp.nodes(data, '$..book.0[("title")]');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          0,
+          "title"
+        ],
+        "value": "Sayings of the Century"
+      }
+    ]);
+  });
+
+  test('[X] branches with list of script expression via active index', function() {
+    log(jp.parse('$..book[("title"),("title")]'));
+    var results = jp.nodes(data, '$..book[("title"),("title")]');
+    assert.deepEqual(results, [false]);
+  });
+
+  test('[X] child member script expression', function() {
+    log(jp.parse('$..book.(@.length-1).title'));
+    var results = jp.nodes(data, '$..book.(@.length-1).title');
+    assert.deepEqual(results, [false]);
   });
 
   test('[X] branch out and in via active index, single subscript and subscript list branch cases', function() {
@@ -717,6 +746,87 @@ suite('jsonpath#query', function() {
   test('throws for bad input', function() {
     assert.throws(function() { jp.query({}, null) }, /we need a path/);
   });
+
+  test('[X] all books [author,title] via list of subscript expression with first level STAR expression', function() {
+    var results = jpql.query(data, '$..book[*.title,*.price]');
+    assert.deepEqual(results, [false]);
+  });
+
+  test('[X] all books [author,title] via list of subscript expression with first level filter expression', function() {
+    var results = jpql.query(data, '$..book[?(@.isbn).title,?(@.isbn).price]');
+    assert.deepEqual(results, [false]);
+  });
+
+  test('[X] all books [author,title] via list of subscript expression with first level slice expression', function() {
+    var results = jpql.query(data, '$..book[1:2.title,3:4.price]');
+    assert.deepEqual(results, [false]);
+  });
+
+  test('[X] all books [author,title] via list of subscript expression with first level active slice expression', function() {
+    var results = jpql.query(data, '$..book[({@.length-3}):({@.length-2}).title,({@.length-2}):({@.length-1}).title.price]');
+    assert.deepEqual(results, [false]);
+  });
+
+  test('[X] all books [author,title] via list of subscript expression with first level script expression', function() {
+    var results = jpql.query(data, '$..book[(@.length-2).title,(@.length-1).price]');
+    assert.deepEqual(results, false);
+  });
+
+  test('[X] all books [author,title] via list of subscript expression with first level active script expression', function() {
+    var results = jpql.query(data, '$..book[({@.length-2}).title,({@.length-1}).price]');
+    assert.deepEqual(results, [false]);
+  });
+
+  test('[X] all books [author,title] via list of subscript expression with first level $root back reference expression', function() {
+    var results = jpql.query(data, '$..book[$.0.title,$.1.price]');
+    assert.deepEqual(results, [false]);
+  });
+
+  test('[Y] all books [author,title] via list of subscript expression with first level call expression -> active position anchor', function() {
+    var results = jpql.query(data, '$..book[(delay: 100).title,(delay: 100 ).price]');
+    assert.deepEqual(results, [false]);
+  });
+
+  test('[Y] all books [author,title] via list of subscript expression with first level call expression -> active position anchor', function() {
+    var results = jpql.query(data, '$..book[(delay: 100).title,(delay: 100 ).price]');
+    assert.deepEqual(results, [false]);
+  });
+
+  test('[?] in call expression, spaces are illegal between the opening ( and the key, and between the key and the ":", parse as script expression', function() {
+    var results = jpql.query(data, '$..book[( delay: 100).title,( delay: 100 ).price]');
+    assert.deepEqual(results, [false]);
+  });
+
+  test('[Y] subscript-style call expression with identifier style key', function() {
+    var results = jpql.query(data, '$..book(take: 2).title'); //subscript style call
+    assert.deepEqual(results, [false]);
+  });
+
+  test('[?] subscript-style call expression with keyword literal style key coerces into string', function() {
+    var results = jpql.query(data, "$..book(true: 2).title"); //subscript style call
+    assert.deepEqual(results, [false]);
+  });
+
+  test('[Y] just a member followed by a script expression, while implementation can produce the same result, the parser does not consider this a call expression, not to be confused with book(take: 2)', function() {
+    var results = jpql.query(data, '$..book.take.(2).title'); //subscript style call
+    assert.deepEqual(results, [false]);
+  });
+
+  test('[X] descendant call expression', function() {
+    var results = jpql.query(data, '$.store.*..(take: 1).name'); //first of each category
+    assert.deepEqual(results, [false]);
+  });
+
+  test('[X] active script expressions listables are still members :: SCRIPT', function() {
+    var results = jpql.query(data, '$..book.(@.length-1).title');
+    assert.deepEqual(results, [false]);
+  });
+
+  test('[X] active script expressions listables are still members :: ACTIVE_SCRIPT', function() {
+    var results = jpql.query(data, '$..book.({@.length-1}).title');
+    assert.deepEqual(results, [false]);
+  });
+
 
 });
 
