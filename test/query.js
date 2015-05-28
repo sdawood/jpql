@@ -175,6 +175,20 @@ suite('query', function() {
     assert.deepEqual(results, [ data.store.book[0], data.store.book[2]]);
   });
 
+  test('slice with step < 0', function() {
+    var results = jp.query(data, "$.store.book[4:0:-1]");
+    assert.deepEqual(results, [
+      data.store.book[3],
+      data.store.book[2],
+      data.store.book[1],
+    ]);
+  });
+
+  test('slice with start < end, step < 0', function() {
+    var results = jp.paths(data, "$.store.book[0:2:-1]");
+    assert.deepEqual(results, []);
+  });
+
   test('union of subscript string literal keys', function() {
     var results = jp.nodes(data, "$.store['book','bicycle']");
     assert.deepEqual(results, [

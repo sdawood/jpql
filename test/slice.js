@@ -1,5 +1,5 @@
 var assert = require('assert');
-var slice = require('../lib/slice');
+var slice = require('../lib/slice').slice;
 
 var data = ['a', 'b', 'c', 'd', 'e', 'f'];
 
@@ -26,14 +26,15 @@ suite('slice', function() {
   });
 
   test('empty extents and negative step reverses', function() {
-    assert.deepEqual(slice(data, null, null, -1), ['f', 'e', 'd', 'c', 'b', 'a']);
+    assert.deepEqual(slice(data, null, null, -1), ['f', 'e', 'd', 'c', 'b']);
   });
 
-  test('negative step partial slice', function() {
-    assert.deepEqual(slice(data, 4, 2, -1), ['e', 'd']);
+  test('meaningless negative step partial slice', function() {
+    assert.deepEqual(slice(data, 2, 4, -1), []);
   });
 
   test('negative step partial slice no start defaults to end', function() {
+    assert.deepEqual(slice(data, null, 2, -1), slice(data, data.length, 2, -1));
     assert.deepEqual(slice(data, null, 2, -1), ['f', 'e', 'd']);
   });
 
@@ -52,6 +53,16 @@ suite('slice', function() {
   test('zero step gets shot down', function() {
     assert.throws(function() { slice(data, null, null, 0) });
   });
+
+  test('slice with step > 1', function() {
+        var results = slice(data, 0, 4, 2);
+        assert.deepEqual(results, ['a', 'c']);
+   });
+
+  test('meaningless slice with start < end, step < 0', function() {
+        var results = slice(data, 0, 2, -1);
+        assert.deepEqual(results, []);
+   });
 
 });
 
