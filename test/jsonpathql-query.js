@@ -183,6 +183,64 @@ suite('jsonpath#query', function() {
     ]);
   });
 
+  test('first two authors via nested subscripts', function() {
+    var results = jp.nodes(data, '$..book[0[author[0].profile[name,twitter]],1[author[0].profile[name,twitter]]]');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          0,
+          "author",
+          0,
+          "profile",
+          "name"
+        ],
+        "value": "Nigel Rees"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          0,
+          "author",
+          0,
+          "profile",
+          "twitter"
+        ],
+        "value": "@NigelRees"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          1,
+          "author",
+          0,
+          "profile",
+          "name"
+        ],
+        "value": "Evelyn Waugh"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          1,
+          "author",
+          0,
+          "profile",
+          "twitter"
+        ],
+        "value": "@EvelynWaugh"
+      }
+    ]);
+  });
+
   test('filter all books with isbn number', function() {
     var results = jp.nodes(data, '$..book[?(@.isbn)]');
     assert.deepEqual(results, [
@@ -413,7 +471,8 @@ suite('jsonpath#query', function() {
     var results = jp.nodes(data, '$.store.book..0');
     /** demonestrates a case of circular reference since book[0].athuor[0] is included twice, shoulw be extracted as $ref
      *  - traverse doesn't detect a circular reference since the reference is not a direct parent of the node but a leaf of a sibling */
-    assert.deepEqual(results, [ { path: [ '$', 'store', 'book', 0 ],
+    assert.deepEqual(results, [
+      { path: [ '$', 'store', 'book', 0 ],
       value:
       { category: 'reference',
         author:
@@ -859,6 +918,52 @@ suite('jsonpath#query', function() {
 
   test('[Y] all books [author,title] via list of subscript expression with first level active slice expression', function() {
     var results = jp.nodes(data, '$..book[({@.length-3}):({@.length-1}).title,({@.length-3}):({@.length-1}).price]');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          1,
+          "title"
+        ],
+        "value": "Sword of Honour"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          2,
+          "title"
+        ],
+        "value": "Moby Dick"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          1,
+          "price"
+        ],
+        "value": 12.99
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          2,
+          "price"
+        ],
+        "value": 8.99
+      }
+    ]);
+  });
+
+  test('[Y] all books [author,title] via single subscript expression with first level active slice expression', function() {
+    var results = jp.nodes(data, '$..book[({@.length-3}):({@.length-1}).title]');
     assert.deepEqual(results, [
       {
         "path": [
