@@ -133,7 +133,7 @@ suite('jsonpath#query', function() {
     ]);
   });
 
-//  test('[X] all books with [isbn,title] via subscript expression with leading * (strict structure matching) via $has filter', function() {
+//  test('[Y] all books with [isbn,title] via subscript expression with leading * (strict structure matching) via $has filter', function() {
 //    var results = jp.nodes(data, '$..*[?($has("isbn", "title"))][isbn,title]');
 //    assert.deepEqual(results, [
 //      { path: ['$', 'store', 'book', 2, 'isbn'], value: data.store.book[2].isbn },
@@ -409,7 +409,7 @@ suite('jsonpath#query', function() {
     assert.deepEqual(results, [ { path: [ '$', 'store', 'book', 0 ], value: data.store.book[0] } ]);
   });
 
-  test('[X] * Circular Reference Case descendant numeric literal gets first element', function() {
+  test('[Y] * Circular Reference Case descendant numeric literal gets first element', function() {
     var results = jp.nodes(data, '$.store.book..0');
     /** demonestrates a case of circular reference since book[0].athuor[0] is included twice, shoulw be extracted as $ref
      *  - traverse doesn't detect a circular reference since the reference is not a direct parent of the node but a leaf of a sibling */
@@ -534,7 +534,7 @@ suite('jsonpath#query', function() {
     ]);
   });
 
-  test('[X] branches with good old script expression', function() {
+  test('[Y] branches with good old script expression', function() {
     log(jp.parse('$..book.0[("title")]'));
     var results = jp.nodes(data, '$..book.0[("title")]');
     assert.deepEqual(results, [
@@ -551,10 +551,13 @@ suite('jsonpath#query', function() {
     ]);
   });
 
-  test('[X] branches with list of script expression via active index', function() {
+  test('[Y] branches with list of script expression via leading index', function() {
     log(jp.parse('$..book[("title"),("title")]'));
-    var results = jp.nodes(data, '$..book[("title"),("title")]');
-    assert.deepEqual(results, [false]);
+    var results = jp.query(data, '$..book[0.("title"),1.("title")]');
+    assert.deepEqual(results, [
+      data.store.book[0].title,
+      data.store.book[1].title
+    ]);
   });
 
   test('[Y] child member script expression', function() {
@@ -573,7 +576,7 @@ suite('jsonpath#query', function() {
     ]);
   });
 
-  test('[X] branch out and in via active index, single subscript and subscript list branch cases', function() {
+  test('[Y] branch out and in via active index, single subscript and subscript list branch cases', function() {
     var results = jp.nodes(data, '$..book[.author,[author][0].profile.name,.author[0].profile.name]');
     assert.deepEqual(results, [
       {
@@ -757,12 +760,12 @@ suite('jsonpath#query', function() {
     assert.throws(function() { jp.query({}, null) }, /we need a path/);
   });
 
-  test('[X] all books [author,title] via list of subscript expression with first level STAR expression, should include all - listed fields', function() {
+  test('[all-fields] all books [author,title] via list of subscript expression with first level STAR expression, should include all - listed fields', function() {
     var results = jp.nodes(data, '$..book[author.profile.twitter,*]');
     assert.deepEqual(results, [false]);
   });
 
-  test('[X] all books [author,title] via list of subscript expression with first level filter expression', function() {
+  test('[Y] all books [author,title] via list of subscript expression with first level filter expression', function() {
     var results = jp.nodes(data, '$..book[?(@.isbn).title,?(@.isbn).price]');
     assert.deepEqual(results, [
       {
@@ -808,7 +811,7 @@ suite('jsonpath#query', function() {
     ]);
   });
 
-  test('[X] all books [author,title] via list of subscript expression with first level slice expression', function() {
+  test('[Y] all books [author,title] via list of subscript expression with first level slice expression', function() {
     var results = jp.nodes(data, '$..book[0:2.title,2:4.title]');
     assert.deepEqual(results, [
       {
@@ -934,32 +937,32 @@ suite('jsonpath#query', function() {
     ]);
   });
 
-  test('[X] all books [author,title] via list of subscript expression with first level $root back reference expression', function() {
+  test('[$root back reference] all books [author,title] via list of subscript expression with first level $root back reference expression', function() {
     var results = jp.query(data, '$..book[$.0.title,$.1.price]');
     assert.deepEqual(results, [false]);
   });
 
-  test('[Y] all books [author,title] via list of subscript expression with first level call expression -> active position anchor', function() {
+  test('[?subscript-child-call_expression] all books [author,title] via list of subscript expression with first level call expression -> active position anchor', function() {
     var results = jp.query(data, '$..book[(delay: 100).title,(delay: 100 ).price]');
     assert.deepEqual(results, [false]);
   });
 
-  test('[Y] all books [author,title] via list of subscript expression with first level call expression -> active position anchor', function() {
+  test('[?subscript-child-call_expression] all books [author,title] via list of subscript expression with first level call expression -> active position anchor', function() {
     var results = jp.query(data, '$..book[(delay: 100).title,(delay: 100 ).price]');
     assert.deepEqual(results, [false]);
   });
 
-  test('[?] in call expression, spaces are illegal between the opening ( and the key, and between the key and the ":", parse as script expression', function() {
+  test('[?] in call expression, spaces are illegal between the opening ( and the key, and between the key and the ":", parsed as void script expression ending the path retreival', function() {
     var results = jp.query(data, '$..book[( delay: 100).title,( delay: 100 ).price]');
-    assert.deepEqual(results, [false]);
+    assert.deepEqual(results, []);
   });
 
-  test('[Y] subscript-style call expression with identifier style key', function() {
+  test('[?subscript-child-call_expression] subscript-style call expression with identifier style key', function() {
     var results = jp.query(data, '$..book(take: 2).title'); //subscript style call
     assert.deepEqual(results, [false]);
   });
 
-  test('[?] subscript-style call expression with keyword literal style key coerces into string', function() {
+  test('[?subscript-child-call_expression] subscript-style call expression with keyword literal style key coerces into string', function() {
     var results = jp.query(data, "$..book(true: 2).title"); //subscript style call
     assert.deepEqual(results, [false]);
   });
@@ -969,7 +972,7 @@ suite('jsonpath#query', function() {
     assert.deepEqual(results, [data.store.book[2].title]);
   });
 
-  test('[X] descendant call expression', function() {
+  test('[?subscript-descendant-call_expression] descendant call expression', function() {
     var results = jp.query(data, '$.store.*..(take: 1).name'); //first of each category
     assert.deepEqual(results, [false]);
   });
