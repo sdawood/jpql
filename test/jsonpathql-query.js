@@ -962,9 +962,29 @@ suite('jsonpath#query', function() {
     ]);
   });
 
-  test('[Y] all books [author,title] via single subscript expression with first level active slice expression', function() {
-    var results = jp.nodes(data, '$..book[({@.length-3}):({@.length-1}).title]');
+  test('[Y] all books [title] via single subscript expression with first level active slice expression', function() {
+    var results = jp.nodes(data, '$..book[({@.length-4}):({@.length})[title,price]]');
     assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          0,
+          "title"
+        ],
+        "value": "Sayings of the Century"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          0,
+          "price"
+        ],
+        "value": 8.95
+      },
       {
         "path": [
           "$",
@@ -974,16 +994,6 @@ suite('jsonpath#query', function() {
           "title"
         ],
         "value": "Sword of Honour"
-      },
-      {
-        "path": [
-          "$",
-          "store",
-          "book",
-          2,
-          "title"
-        ],
-        "value": "Moby Dick"
       },
       {
         "path": [
@@ -1001,9 +1011,39 @@ suite('jsonpath#query', function() {
           "store",
           "book",
           2,
+          "title"
+        ],
+        "value": "Moby Dick"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          2,
           "price"
         ],
         "value": 8.99
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          3,
+          "title"
+        ],
+        "value": "The Lord of the Rings"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          3,
+          "price"
+        ],
+        "value": 22.99
       }
     ]);
   });
