@@ -1,5 +1,6 @@
 var util = require('util');
 var assert = require('assert');
+var expect = require('chai').expect;
 var jp = require('../');
 var traverse = require('traverse');
 var data = require('./data/deep-store.json');
@@ -62,7 +63,7 @@ suite('jsonpath#query', function() {
     ]);
   });
 
-  test('[Y] selective branches via nested branches', function() {
+  test('[X duplicates] selective branches via nested branches', function() {
     log(jp.parse('$.store.book[0..[..name,..twitter],1..[..name,..twitter]]'));
     var results = jp.nodes(data, '$.store.book[0..[..name,..twitter],1..[..name,..twitter]]');
     assert.deepEqual(results, [
@@ -802,10 +803,76 @@ suite('jsonpath#query', function() {
   });
 
   test('descendant subscript numeric literal', function() {
-    var data = [ 0, 1, [ 2, 3, 4 ], [ 5, 6, 7, [ 8, 9 , 10 ] ] ];
-    var results = jp.query(data, '$..[0,1]');
-    assert.deepEqual(results, [ 0, 1, 2, 3, 5, 6, 8, 9 ]);
+    var data = [ '0-0', '1-0', [ '2-0', '2-1', '2-2' ], [ '3-0', '3-1', 3-2, [ '3-3-0', '3-3-1' , '3-3-2' ] ] ];
+    var results = jp.nodes(data, '$..[0,1]');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          0
+        ],
+        "value": "0-0"
+      },
+      {
+        "path": [
+          "$",
+          2,
+          0
+        ],
+        "value": "2-0"
+      },
+      {
+        "path": [
+          "$",
+          3,
+          0
+        ],
+        "value": "3-0"
+      },
+      {
+        "path": [
+          "$",
+          3,
+          3,
+          0
+        ],
+        "value": "3-3-0"
+      },
+      {
+        "path": [
+          "$",
+          1
+        ],
+        "value": "1-0"
+      },
+      {
+        "path": [
+          "$",
+          2,
+          1
+        ],
+        "value": "2-1"
+      },
+      {
+        "path": [
+          "$",
+          3,
+          1
+        ],
+        "value": "3-1"
+      },
+      {
+        "path": [
+          "$",
+          3,
+          3,
+          1
+        ],
+        "value": "3-3-1"
+      }
+    ]);
   });
+
 
   test('throws for no input', function() {
     assert.throws(function() { jp.query() }, /needs to be an object/);
@@ -819,9 +886,111 @@ suite('jsonpath#query', function() {
     assert.throws(function() { jp.query({}, null) }, /we need a path/);
   });
 
-  test('[all-fields] all books [author,title] via list of subscript expression with first level STAR expression, should include all - listed fields', function() {
-    var results = jp.nodes(data, '$..book[author.profile.twitter,*]');
-    assert.deepEqual(results, [false]);
+  test('[header, details, footer] all books [author,title] via list of subscript expression with first level STAR expression, header, details, footer style', function() {
+    var results = jp.nodes(data, '$..book.0..author[*..name,*,*..twitter]');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          0,
+          "author",
+          0,
+          "profile",
+          "name"
+        ],
+        "value": "Nigel Rees"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          0,
+          "author",
+          0
+        ],
+        "value": {
+          "profile": {
+            "name": "Nigel Rees",
+            "twitter": "@NigelRees"
+          },
+          "rating": 4
+        }
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          0,
+          "author",
+          0,
+          "profile",
+          "twitter"
+        ],
+        "value": "@NigelRees"
+      }
+    ]);
+  });
+
+  test('[all except] all author details via except the twitter handle using a filter-out', function() {
+    var results = jp.nodes(data, '$..book.*..author[.profile..[?($key !== "twitter")]]');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          0,
+          "author",
+          0,
+          "profile",
+          "name"
+        ],
+        "value": "Nigel Rees"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          1,
+          "author",
+          0,
+          "profile",
+          "name"
+        ],
+        "value": "Evelyn Waugh"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          2,
+          "author",
+          0,
+          "profile",
+          "name"
+        ],
+        "value": "Herman Melville"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          3,
+          "author",
+          0,
+          "profile",
+          "name"
+        ],
+        "value": "J. R. R. Tolkien"
+      }
+    ]);
   });
 
   test('[Y] all books [author,title] via list of subscript expression with first level filter expression', function() {
@@ -1088,13 +1257,11 @@ suite('jsonpath#query', function() {
   });
 
   test('[?subscript-child-call_expression] all books [author,title] via list of subscript expression with first level call expression -> active position anchor', function() {
-    var results = jp.query(data, '$..book[(delay: 100).title,(delay: 100 ).price]');
-    assert.deepEqual(results, [false]);
+    expect(function() {jp.query(data, '$..book[(delay: 100).title,(delay: 100 ).price]')}).to.throw("Unsupported query component: subscript-child-call_expression");
   });
 
   test('[?subscript-child-call_expression] all books [author,title] via list of subscript expression with first level call expression -> active position anchor', function() {
-    var results = jp.query(data, '$..book[(delay: 100).title,(delay: 100 ).price]');
-    assert.deepEqual(results, [false]);
+    expect(function() {jp.query(data, '$..book[(delay: 100).title,(delay: 100 ).price]')}).to.throw("Unsupported query component: subscript-child-call_expression");
   });
 
   test('[?] in call expression, spaces are illegal between the opening ( and the key, and between the key and the ":", parsed as void script expression ending the path retreival', function() {
@@ -1103,13 +1270,11 @@ suite('jsonpath#query', function() {
   });
 
   test('[?subscript-child-call_expression] subscript-style call expression with identifier style key', function() {
-    var results = jp.query(data, '$..book(take: 2).title'); //subscript style call
-    assert.deepEqual(results, [false]);
+    expect(function() {jp.query(data, '$..book(take: 2).title')}).to.throw("Unsupported query component: subscript-child-call_expression"); //subscript style call
   });
 
   test('[?subscript-child-call_expression] subscript-style call expression with keyword literal style key coerces into string', function() {
-    var results = jp.query(data, "$..book(true: 2).title"); //subscript style call
-    assert.deepEqual(results, [false]);
+    expect(function() {jp.query(data, "$..book(true: 2).title")}).to.throw("Unsupported query component: subscript-child-call_expression"); //subscript style call
   });
 
   test('[Y] just a member followed by a script expression, while implementation can produce the same result, the parser does not consider this a call expression, not to be confused with book(take: 2)', function() {
@@ -1118,8 +1283,7 @@ suite('jsonpath#query', function() {
   });
 
   test('[?subscript-descendant-call_expression] descendant call expression', function() {
-    var results = jp.query(data, '$.store.*..(take: 1).name'); //first of each category
-    assert.deepEqual(results, [false]);
+    expect(function() {jp.query(data, '$.store.*..(take: 1).name')}).to.throw("Unsupported query component: subscript-descendant-call_expression"); //first of each category
   });
 
   test('[Y] active script expressions listables are still members :: SCRIPT', function() {

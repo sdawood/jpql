@@ -278,7 +278,16 @@ suite('query', function() {
   test('descendant subscript numeric literal', function() {
     var data = [ 0, 1, [ 2, 3, 4 ], [ 5, 6, 7, [ 8, 9 , 10 ] ] ];
     var results = jp.query(data, '$..[0,1]');
-    assert.deepEqual(results, [ 0, 1, 2, 3, 5, 6, 8, 9 ]);
+    assert.deepEqual(results, [
+      0,
+      2,
+      5,
+      8,
+      1,
+      3,
+      6,
+      9
+    ]);
   });
 
   test('throws for no input', function() {

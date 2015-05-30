@@ -33,8 +33,7 @@ suite('jsonGpath', function() {
   test('computed Graph Edges', function () {
     var book0 = _.merge({}, data.store.book[0]);
     var _data = { store: { book: [{ language: 'en', author: [{ profile: {'fr-name': 'name in french', 'en-name': 'name in english'}}]}]}};
-//    var path = "$store.book[0[author.0.profile[({$.store.book[0]language + '-name'})]]]";
-    var path = "$store.book[0[author.0]]";
+    var path = "$store.book[0[author.0.profile[({$.store.book[0].language + '-name'})]]]";
     console.log(jpql.parse(path));
     var results = jpql.query(_data, path);
     assert.deepEqual(results, [false]);
