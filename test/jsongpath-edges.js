@@ -501,15 +501,78 @@ suite('jsonGpath edges', function() {
     ]);
   });
 
-  test('parse nested subscript expression with leading active expression ($)', function () {
-    var _data = {i18n: {language: ['english', 'french']}, book: [{english: { description: 'english description'}, french: {description: 'french description'}}] }
-    var results = jpql.nodes(_data, "$.book[*][$.i18n.language]"); //$$ references child root node, this specific simple case is equivalent to genereLists[*][name,rating]
-    assert.deepEqual(results, [false]);
+  test('[Circular Reference Scenario] parse nested subscript expression with leading active expression ($)', function () {
+    var _data = {i18n: {'default': 'english', language: ['english', 'french']}, book: [{english: { description: 'english description'}, french: {description: 'french description'}}] };
+    var results = jpql.nodes(_data, "$.book[*][$.i18n['default'],$.i18n.language.*]"); //$$ references child root node, this specific simple case is equivalent to genereLists[*][name,rating]
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "book",
+          0,
+          "english"
+        ],
+        "value": {
+          "description": "english description"
+        }
+      },
+      {
+        "path": [
+          "$",
+          "book",
+          0,
+          "english"
+        ],
+        "value": {
+          "description": "english description"
+        }
+      },
+      {
+        "path": [
+          "$",
+          "book",
+          0,
+          "french"
+        ],
+        "value": {
+          "description": "french description"
+        }
+      }
+    ]);
+  });
+
+  test('parse nested subscript expression with leading active expression ($) yielding multiple results', function () {
+    var _data = {i18n: {'default': 'english', language: ['english', 'french']}, book: [{english: { description: 'english description'}, french: {description: 'french description'}}] };
+    var results = jpql.nodes(_data, "$.book[*][$.i18n.language[*]]"); //$$ references child root node, this specific simple case is equivalent to genereLists[*][name,rating]
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "book",
+          0,
+          "english"
+        ],
+        "value": {
+          "description": "english description"
+        }
+      },
+      {
+        "path": [
+          "$",
+          "book",
+          0,
+          "french"
+        ],
+        "value": {
+          "description": "french description"
+        }
+      }
+    ]);
   });
 
   test('parse active script expression with $$ root back reference', function () {
     var _data = {i18n: {language: 'english'}, book: [{english: { description: 'english description'}, french: {description: 'french description'}}] }
-    var results = jpql.nodes(_data, "$.book[*][({$.i18n.language}).description]"); //$$ references child root node, this specific simple case is equivalent to genereLists[*][name,rating]
+    var results = jpql.nodes(_data, "$.book[*][({$.i18n.language}).description]");
     assert.deepEqual(results, [
       {
         "path": [
@@ -520,6 +583,24 @@ suite('jsonGpath edges', function() {
           "description"
         ],
         "value": "english description"
+      }
+    ]);
+  });
+
+  test('parse active filter expression with $$ root back reference, a taste of edge traversal', function () {
+    var _data = {i18n: {'user_default': 'french'}, book: [{language: 'english', title: 'english book'}, {language: 'french', title: 'french book'}] };
+    var results = jpql.nodes(_data, "$.book[?($.i18n.user_default == @.language)]");
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "book",
+          1
+        ],
+        "value": {
+          "language": "french",
+          "title": "french book"
+        }
       }
     ]);
   });

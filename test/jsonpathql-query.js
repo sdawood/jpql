@@ -1251,11 +1251,6 @@ suite('jsonpath#query', function() {
     ]);
   });
 
-  test('[$root back reference] all books [author,title] via list of subscript expression with first level $root back reference expression', function() {
-    var results = jp.query(data, '$..book[$.0.title,$.1.price]');
-    assert.deepEqual(results, [false]);
-  });
-
   test('[?subscript-child-call_expression] all books [author,title] via list of subscript expression with first level call expression -> active position anchor', function() {
     expect(function() {jp.query(data, '$..book[(delay: 100).title,(delay: 100 ).price]')}).to.throw("Unsupported query component: subscript-child-call_expression");
   });
