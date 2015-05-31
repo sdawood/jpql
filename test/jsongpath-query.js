@@ -12,16 +12,19 @@ var _ = require('lodash');
  * navigation is exclusively within the sub-graph we accessed as $ earlier, which provides an inherent scoping security aspect.
  * within the edge expression ( member, filter, script, slice, ... ) child can access:
  * 1. @ == immediate parent
- * 2. $ == sub-graph root, require root ref to be accessible in partial handlers
- * 3. @$ == immediate parent for easy access to siblings
- * Obviously relative bacwards path from child to parent are a no brainer in case of JSON, since in a json tree there is one and only one parent
+ * 2. $ + MEMBER_COMPONENTS. $ == sub-graph root, require root ref to be accessible in partial handlers. Can yield multiple values that would be reduced into a union component
+ * 3. $parent == immediate node before branch for easy access to sibling branches even in the case of a $root branch we can still reference the parent with original jsonpath @ semantics
+ * Obviously relative backwards path from child to parent are a no brainer in case of JSON, since in a json tree there is one and only one parent
  * in "json" mode:
  * - @$$ can easily point back to the grandparent
  * - @$$$ grand grand parent, etc ...
- * - only active components are worth evaluation
+ * - only active components are possible to evaluate
+ * - * means jump one up
+ * - .* means jump one up
+ * - .. is an less efficient, unless an Observable is implemented with .takeUntil
  * - @.parent.grandparent[-1:]
- * - backwardd path require parent reference to walk back up the evaluated path so far
- * -
+ * - backward path require parent reference to walk back up the evaluated path so far
+ * - with parent.absolutePath available to scripts, a script expression can evaluate to jp.stringify(parent.path.slice(-3)) to find the 3rd grandparent -> test stringify
  * */
 
 
@@ -38,7 +41,12 @@ suite('jsonGpath', function() {
   });
 
   test('Conditional Graph Edges with branch-root reference == $parent', function () {
-    var results = jpql.nodes(graphJSON, 'nodes["123"][id,profile[name,birthdate[month]],$.nodes[({$parent.friends[0]})]]]');
+    var results = jpql.nodes(graphJSON, 'nodes["123"][id,profile[name,birthdate[month]],$.nodes[({$parent.friends[0]})]]');
+    assert.deepEqual(results, [false]);
+  });
+
+  test('Conditional Graph Edges with branch-root reference and expanding script results', function () {
+    var results = jpql.nodes(graphJSON, 'nodes["123"][id,profile[name,birthdate[month]],$.nodes[({$parent.friends})]]');
     assert.deepEqual(results, [false]);
   });
 
