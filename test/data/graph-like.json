@@ -1,0 +1,48 @@
+{
+  "nodes": {
+    "123": {
+      "id": 123,
+      "profile": {
+        "name": "user-123-tester",
+        "birthdate": {
+          "month": 12,
+          "day": 3
+        }
+      },
+      "friends": [111]
+    },
+    "111": {
+      "id": 111,
+      "profile": {
+        "name": "user-111-popular",
+        "birthdate": {
+          "month": 11,
+          "day": 1
+        }
+      },
+      "friends": [222, 123]
+    },
+    "222": {
+      "id": 222,
+      "profile": {
+        "name": "user-222-newbie",
+        "birthdate": {
+          "month": 2,
+          "day": 2
+        }
+      },
+      "friends": [111]
+    },
+    "333": {
+      "id": 333,
+      "profile": {
+        "name": "user-333-lonely",
+        "birthdate": {
+          "month": 3,
+          "day": 3
+        }
+      },
+      "friends": []
+    }
+  }
+}
