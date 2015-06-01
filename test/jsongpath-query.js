@@ -30,6 +30,31 @@ var _ = require('lodash');
 
 suite('jsonGpath', function() {
 
+  test('[negative] member active script producing jsonpath starting with "[" is not a valid jsonpath', function () {
+    assert.throws(function() { jpql.nodes(graphJSON, 'nodes.({"[\'123\'].profile"}).({"birthdate"}).({"month"})') },
+      /Parse error on line 1/);
+  });
+
+  test('[X] $node == $parent always refers to the previous node, active scripts as template placeholders', function () {
+    var results = jpql.nodes(graphJSON, 'nodes.({"123.profile"}).({"birthdate"}).({"month"})');
+    assert.deepEqual(results, [false]);
+  });
+
+  test('[X] $node == $parent always refers to the previous node, active scripts as template placeholders with branches', function () {
+    var results = jpql.nodes(graphJSON, 'nodes.({"[\'123\'].profile[name,birthdate[month]]"})');
+    assert.deepEqual(results, [false]);
+  });
+
+  test('[X] ActiveScripts are the jsonpath object transformation template placeholders', function () {
+    var results = jpql.nodes(graphJSON, 'nodes.({"[\'123\'].profile[name,birthdate[month]]"})');
+    assert.deepEqual(results, [false]);
+  });
+
+  test(']X] $node == $parent is fixed for child-union or descendant-union components refers to the previous node, active scripts as template placeholders', function () {
+    var results = jpql.nodes(graphJSON, 'nodes.({"\'123\'"})[({"\'profile\'"})[({"\'birthdate\'"})[({"\'month\'"})]]]');
+    assert.deepEqual(results, [false]);
+  });
+
   test(']X] Retrieve references to nodes by ID from root $', function () {
     var results = jpql.nodes(graphJSON, 'nodes["123"][id,profile[name,birthdate[month]],$.nodes[({String($parent.friends[0])})]]');
     assert.deepEqual(results, [false]);
