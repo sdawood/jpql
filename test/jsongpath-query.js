@@ -35,44 +35,604 @@ suite('jsonGpath', function() {
       /Parse error on line 1/);
   });
 
-  test('[X] $node == $parent always refers to the previous node, active scripts as template placeholders', function () {
-    var results = jpql.nodes(graphJSON, 'nodes.({"123.profile"}).({"birthdate"}).({"month"})');
+  test('[X] problem with jsonpath macro-style template inside script with leading subscript expression, evaluate as  $[["123"].id]', function () {
+    var results = jpql.nodes(graphJSON, 'nodes[({"[\'123\'].id"})].({"profile"}).({"birthdate"}).({"month"})');
     assert.deepEqual(results, [false]);
+  });
+
+  test('[X] $node == $parent always refers to the previous node, active scripts returning strings as template placeholders', function () {
+    var results = jpql.nodes(graphJSON, 'nodes["123"].({"profile"}).({"birthdate"}).({"month"})');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "birthdate",
+          "month"
+        ],
+        "value": 12
+      }
+    ]);
+  });
+
+  test('[X script trying to use leading subscript expression] $node == $parent always refers to the previous node, active scripts as template placeholders', function () {
+    var results = jpql.nodes(graphJSON, '$.({"nodes[\'123\']"}).({"profile"}).({"birthdate"}).({"month"})');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "birthdate",
+          "month"
+        ],
+        "value": 12
+      }
+    ]);
   });
 
   test('[X] $node == $parent always refers to the previous node, active scripts as template placeholders with branches', function () {
-    var results = jpql.nodes(graphJSON, 'nodes.({"[\'123\'].profile[name,birthdate[month]]"})');
+    var results = jpql.nodes(graphJSON, '({"nodes[\'123\'].profile[name,birthdate[month]]"})');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "name"
+        ],
+        "value": "user-123-tester"
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "birthdate",
+          "month"
+        ],
+        "value": 12
+      }
+    ]);
+  });
+
+  test('[X] ActiveScripts can replace a full json path and evaluate and embedded path. Templates in action', function () {
+    var results = jpql.nodes(graphJSON, '({"nodes[\'123\'].profile[name,birthdate[month]]"})');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "name"
+        ],
+        "value": "user-123-tester"
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "birthdate",
+          "month"
+        ],
+        "value": 12
+      }
+    ]);
+  });
+
+  test(']X] all profile months via descendant @ filter followed by active scripts as template placeholders with branching', function () {
+    var results = jpql.nodes(graphJSON, 'nodes..[?(@.profile)][({"\'profile\'"})[({"\'birthdate\'"})[({"\'month\'"})]]]');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "nodes",
+          "111",
+          "profile",
+          "birthdate",
+          "month"
+        ],
+        "value": 11
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "birthdate",
+          "month"
+        ],
+        "value": 12
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "222",
+          "profile",
+          "birthdate",
+          "month"
+        ],
+        "value": 2
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "333",
+          "profile",
+          "birthdate",
+          "month"
+        ],
+        "value": 3
+      }
+    ]);
+  });
+
+  test(']X] all profile months via descendant $key filter followed by active scripts as template placeholders with branching', function () {
+    var results = jpql.nodes(graphJSON, 'nodes..[?($key === "profile")][({"\'birthdate\'"})[({"\'month\'"})]]');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "nodes",
+          "111",
+          "profile",
+          "birthdate",
+          "month"
+        ],
+        "value": 11
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "birthdate",
+          "month"
+        ],
+        "value": 12
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "222",
+          "profile",
+          "birthdate",
+          "month"
+        ],
+        "value": 2
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "333",
+          "profile",
+          "birthdate",
+          "month"
+        ],
+        "value": 3
+      }
+    ]);
+  });
+
+
+ test(']X] all friends of a single users via filter and active position branches and active scripts using context $ and $parent', function () {
+    var results = jpql.nodes(graphJSON, 'nodes["111"]..' +
+      '[' +
+        '?($key === "friends")' +
+        '[' +
+          '[' +
+              '({$.nodes[$quoteAll($parent[0])]})' +
+          '],' +
+          '[' +
+              '({$.nodes[$quoteAll($parent[1])]})' +
+          ']' +
+        ']' +
+      ']');
     assert.deepEqual(results, [false]);
   });
 
-  test('[X] ActiveScripts are the jsonpath object transformation template placeholders', function () {
-    var results = jpql.nodes(graphJSON, 'nodes.({"[\'123\'].profile[name,birthdate[month]]"})');
+
+  test(']X] all friends of a single users via filter and active position and true root branches and context $parent', function () {
+    var results = jpql.nodes(graphJSON, 'nodes["111"]..' +
+      '[' +
+      '?($key === "friends")' +
+        '[' +
+          '[$.nodes[({$quoteAll($parent[0])})]' +
+          '],' +
+          '[$.nodes[({$quoteAll($parent10])})]' +
+          ']' +
+        ']' +
+      ']');
     assert.deepEqual(results, [false]);
   });
 
-  test(']X] $node == $parent is fixed for child-union or descendant-union components refers to the previous node, active scripts as template placeholders', function () {
-    var results = jpql.nodes(graphJSON, 'nodes.({"\'123\'"})[({"\'profile\'"})[({"\'birthdate\'"})[({"\'month\'"})]]]');
-    assert.deepEqual(results, [false]);
+  test('[X escape string within script] Retrieve references to nodes by ID from root $', function () {
+    var results = jpql.nodes(graphJSON, 'nodes["123"][id,profile[name,birthdate[month]],$.nodes[({"\'" + $parent.friends[0] + "\'"})]]');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "id"
+        ],
+        "value": 123
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "name"
+        ],
+        "value": "user-123-tester"
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "birthdate",
+          "month"
+        ],
+        "value": 12
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "nodes",
+          "111"
+        ],
+        "value": {
+          "friends": [
+            222,
+            123
+          ],
+          "id": 111,
+          "profile": {
+            "birthdate": {
+              "day": 1,
+              "month": 11
+            },
+            "name": "user-111-popular"
+          }
+        }
+      }
+    ]);
   });
 
-  test(']X] Retrieve references to nodes by ID from root $', function () {
-    var results = jpql.nodes(graphJSON, 'nodes["123"][id,profile[name,birthdate[month]],$.nodes[({String($parent.friends[0])})]]');
-    assert.deepEqual(results, [false]);
-  });
-
-  test('Retrieve references to nodes with exhaustive filter', function () {
+  test('Retrieve references to nodes with exhaustive filter, retrieve friend by ID', function () {
     var results = jpql.nodes(graphJSON, 'nodes["123"][id,profile[name,birthdate[month]],$.nodes[?($parent.friends.indexOf(@.id) > -1)]]');
-    assert.deepEqual(results, [false]);
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "id"
+        ],
+        "value": 123
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "name"
+        ],
+        "value": "user-123-tester"
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "birthdate",
+          "month"
+        ],
+        "value": 12
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "nodes",
+          "111"
+        ],
+        "value": {
+          "friends": [
+            222,
+            123
+          ],
+          "id": 111,
+          "profile": {
+            "birthdate": {
+              "day": 1,
+              "month": 11
+            },
+            "name": "user-111-popular"
+          }
+        }
+      }
+    ]);
+  });
+
+ test('Retrieve references to nodes with sub query returning single result, retrieve only friend by ID', function () {
+    var results = jpql.nodes(graphJSON, 'nodes["123"][id,profile[name,birthdate[month]],$.nodes[({$quoteAll($parent.friends)})]]');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "id"
+        ],
+        "value": 123
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "name"
+        ],
+        "value": "user-123-tester"
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "birthdate",
+          "month"
+        ],
+        "value": 12
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "nodes",
+          "111"
+        ],
+        "value": {
+          "friends": [
+            222,
+            123
+          ],
+          "id": 111,
+          "profile": {
+            "birthdate": {
+              "day": 1,
+              "month": 11
+            },
+            "name": "user-111-popular"
+          }
+        }
+      }
+    ]);
+  });
+
+ test('Retrieve references to nodes with sub query returning multiple result, retrieve friend by ID', function () {
+    var results = jpql.nodes(graphJSON, 'nodes["111"][id,profile[name,birthdate[month]],$.nodes[({$quoteAll($parent.friends)})]]');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "nodes",
+          "111",
+          "id"
+        ],
+        "value": 111
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "111",
+          "profile",
+          "name"
+        ],
+        "value": "user-111-popular"
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "111",
+          "profile",
+          "birthdate",
+          "month"
+        ],
+        "value": 11
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "111",
+          "nodes",
+          "222"
+        ],
+        "value": {
+          "friends": [
+            111
+          ],
+          "id": 222,
+          "profile": {
+            "birthdate": {
+              "day": 2,
+              "month": 2
+            },
+            "name": "user-222-newbie"
+          }
+        }
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "111",
+          "nodes",
+          "123"
+        ],
+        "value": {
+          "friends": [
+            111
+          ],
+          "id": 123,
+          "profile": {
+            "birthdate": {
+              "day": 3,
+              "month": 12
+            },
+            "name": "user-123-tester"
+          }
+        }
+      }
+    ]);
   });
 
   test('Conditional Graph Edges with branch-root reference == $parent', function () {
-    var results = jpql.nodes(graphJSON, 'nodes["123"][id,profile[name,birthdate[month]],$.nodes[({$parent.friends[0]})]]');
-    assert.deepEqual(results, [false]);
+    var results = jpql.nodes(graphJSON, 'nodes["123"][id,profile[name,birthdate[month]],$.nodes[({$quoteAll($parent.friends[0])})]]');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "id"
+        ],
+        "value": 123
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "name"
+        ],
+        "value": "user-123-tester"
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "birthdate",
+          "month"
+        ],
+        "value": 12
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "nodes",
+          "111"
+        ],
+        "value": {
+          "friends": [
+            222,
+            123
+          ],
+          "id": 111,
+          "profile": {
+            "birthdate": {
+              "day": 1,
+              "month": 11
+            },
+            "name": "user-111-popular"
+          }
+        }
+      }
+    ]);
   });
 
   test('Conditional Graph Edges with branch-root reference and expanding script results', function () {
-    var results = jpql.nodes(graphJSON, 'nodes["123"][id,profile[name,birthdate[month]],$.nodes[({$parent.friends})]]');
-    assert.deepEqual(results, [false]);
+    var results = jpql.nodes(graphJSON, 'nodes["123"][id,profile[name,birthdate[month]],$.nodes[({$quoteAll($parent.friends)})]]');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "id"
+        ],
+        "value": 123
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "name"
+        ],
+        "value": "user-123-tester"
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "birthdate",
+          "month"
+        ],
+        "value": 12
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "nodes",
+          "111"
+        ],
+        "value": {
+          "friends": [
+            222,
+            123
+          ],
+          "id": 111,
+          "profile": {
+            "birthdate": {
+              "day": 1,
+              "month": 11
+            },
+            "name": "user-111-popular"
+          }
+        }
+      }
+    ]);
   });
 
   test('Single computed Graph Edges via identifier expression', function () {
