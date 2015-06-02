@@ -30,14 +30,14 @@ var _ = require('lodash');
 
 suite('jsonGpath', function() {
 
-  test('[negative] member active script producing jsonpath starting with "[" is not a valid jsonpath', function () {
+  test('[negative] member active script producing jsonpath starting with "[": ".[]" is not a valid jsonpath', function () {
     assert.throws(function() { jpql.nodes(graphJSON, 'nodes.({"[\'123\'].profile"}).({"birthdate"}).({"month"})') },
       /Parse error on line 1/);
   });
 
-  test('[X] problem with jsonpath macro-style template inside script with leading subscript expression, evaluate as  $[["123"].id]', function () {
+  test('[X] problem with jsonpath macro-style template inside script with leading subscript expression, evaluate as  $[["123"].id] === $[0["123"].id] with active position handler', function () {
     var results = jpql.nodes(graphJSON, 'nodes[({"[\'123\'].id"})].({"profile"}).({"birthdate"}).({"month"})');
-    assert.deepEqual(results, [false]);
+    assert.deepEqual(results, []);
   });
 
   test('[X] $node == $parent always refers to the previous node, active scripts returning strings as template placeholders', function () {
@@ -256,7 +256,8 @@ suite('jsonGpath', function() {
           '[$.nodes[({$quoteAll($parent10])})]' +
           ']' +
         ']' +
-      ']');
+      ']'
+    );
     assert.deepEqual(results, [false]);
   });
 
