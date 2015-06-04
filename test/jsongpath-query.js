@@ -42,19 +42,7 @@ suite('jsonGpath', function() {
 
   test('[X] $node == $parent always refers to the previous node, active scripts returning strings as template placeholders', function () {
     var results = jpql.nodes(graphJSON, 'nodes["123"].({"profile"}).({"birthdate"}).({"month"})');
-    assert.deepEqual(results, [
-      {
-        "path": [
-          "$",
-          "nodes",
-          "123",
-          "profile",
-          "birthdate",
-          "month"
-        ],
-        "value": 12
-      }
-    ]);
+    assert.deepEqual(results, [false]);
   });
 
   test('[X script trying to use leading subscript expression] $node == $parent always refers to the previous node, active scripts as template placeholders', function () {
@@ -74,31 +62,14 @@ suite('jsonGpath', function() {
     ]);
   });
 
+  test('[X] $node == $parent always refers to the previous node', function () {
+    var results = jpql.nodes({nodes:[1, [2, 0, [3, 0, 0, [4, 0, 0, 0, ['x']]]]]}, 'nodes[({$parent[0]})][({$parent[0]})][({$parent[0]})][({$parent[0]})][0]');
+    assert.deepEqual(results, [false]);
+  });
+
   test('[X] $node == $parent always refers to the previous node, active scripts as template placeholders with branches', function () {
     var results = jpql.nodes(graphJSON, '({"nodes[\'123\'].profile[name,birthdate[month]]"})');
-    assert.deepEqual(results, [
-      {
-        "path": [
-          "$",
-          "nodes",
-          "123",
-          "profile",
-          "name"
-        ],
-        "value": "user-123-tester"
-      },
-      {
-        "path": [
-          "$",
-          "nodes",
-          "123",
-          "profile",
-          "birthdate",
-          "month"
-        ],
-        "value": 12
-      }
-    ]);
+    assert.deepEqual(results, [false]);
   });
 
   test('[X] ActiveScripts can replace a full json path and evaluate and embedded path. Templates in action', function () {
@@ -178,7 +149,7 @@ suite('jsonGpath', function() {
     ]);
   });
 
-  test(']X] all profile months via descendant $key filter followed by active scripts as template placeholders with branching', function () {
+  test('[$key enables subscript-descendant-string_literal] all profile months via descendant $key filter followed by active scripts as template placeholders with branching', function () {
     var results = jpql.nodes(graphJSON, 'nodes..[?($key === "profile")][({"\'birthdate\'"})[({"\'month\'"})]]');
     assert.deepEqual(results, [
       {
@@ -236,10 +207,10 @@ suite('jsonGpath', function() {
         '[' +
           '[' +
               '({$.nodes[$quoteAll($parent[0])]})' +
-          '],' +
-          '[' +
-              '({$.nodes[$quoteAll($parent[1])]})' +
           ']' +
+//          ',[' +
+//              '({$.nodes[$quoteAll($parent[1])]})' +
+//          ']' +
         ']' +
       ']');
     assert.deepEqual(results, [false]);
