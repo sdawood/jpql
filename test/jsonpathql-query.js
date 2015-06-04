@@ -63,7 +63,7 @@ suite('jsonpath#query', function() {
     ]);
   });
 
-  test('[X duplicates] selective branches via nested branches', function() {
+  test('[X duplicates] selective branches via nested descendant branches', function() {
     log(jp.parse('$.store.book[0..[..name,..twitter],1..[..name,..twitter]]'));
     var results = jp.nodes(data, '$.store.book[0..[..name,..twitter],1..[..name,..twitter]]');
     assert.deepEqual(results, [
@@ -122,6 +122,64 @@ suite('jsonpath#query', function() {
     ]);
   });
 
+  test('[X duplicates] selective branches via nested branches', function() {
+    log(jp.parse('$.store.book[.author[.profile[name,twitter]],.author[.profile[name,twitter]]]'));
+    var results = jp.nodes(data, '$.store.book[.author[.profile[name,twitter]],.author[.profile[name,twitter]]]');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          0,
+          "author",
+          0,
+          "profile",
+          "name"
+        ],
+        "value": "Nigel Rees"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          0,
+          "author",
+          0,
+          "profile",
+          "twitter"
+        ],
+        "value": "@NigelRees"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          1,
+          "author",
+          0,
+          "profile",
+          "name"
+        ],
+        "value": "Evelyn Waugh"
+      },
+      {
+        "path": [
+          "$",
+          "store",
+          "book",
+          1,
+          "author",
+          0,
+          "profile",
+          "twitter"
+        ],
+        "value": "@EvelynWaugh"
+      }
+    ]);
+  });
 
 
   test('[Y] all books with [isbn,title] via subscript expression with leading * strict structure matching via filter', function() {

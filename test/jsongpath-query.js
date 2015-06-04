@@ -62,9 +62,22 @@ suite('jsonGpath', function() {
     ]);
   });
 
-  test('[X] $node == $parent always refers to the previous node', function () {
+  test('[Y] dynamic path as a function of node values, $node == $parent always refers to the previous node', function () {
     var results = jpql.nodes({nodes:[1, [2, 0, [3, 0, 0, [4, 0, 0, 0, ['x']]]]]}, 'nodes[({$parent[0]})][({$parent[0]})][({$parent[0]})][({$parent[0]})][0]');
-    assert.deepEqual(results, [false]);
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "nodes",
+          1,
+          2,
+          3,
+          4,
+          0
+        ],
+        "value": "x"
+      }
+    ]);
   });
 
   test('[X] $node == $parent always refers to the previous node, active scripts as template placeholders with branches', function () {
