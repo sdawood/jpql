@@ -132,21 +132,58 @@ describe('context manager', function() {
           }
         },
         "$parent": {
-          "book": [
-            {
-              "title": "book0"
-            }
-          ]
+          "title": "book0"
         },
         "$root": {
           "x": 0,
           "y": 1
         },
-        "commit": 3,
+        "commit": 4,
         "commitMessages": [
           "$root|node#1",
           "node#2",
-          "node#2|commit#1"
+          "node#2|commit#1",
+          "node#2|commit#1|branch#1"
+        ],
+        "origin": "master",
+        "revision": 0,
+        "revisionTags": [
+          "node#2|commit#1|branch#1"
+        ],
+        "version": 1,
+        "versionTags": [
+          "$root|node#1",
+          "node#2"
+        ]
+      }));
+  });
+
+  it('should keep branch changes isolated from master', function () {
+    var ctx = new ContextManager();
+    ctx.node({$root: {x: 0, y: 1}}, '$root|node#1');
+    ctx.node({$parent: {store: {book: [{title: 'book0'}]}}}, 'node#2');
+    ctx.commit({$parent: {book: [{author: 'author0'}]}}, 'node#2|commit#1');
+    var branchfrommaster = ctx.branch({$parent: {author: 'author0'}}, 'node#2|commit#2|branch#1', 'branch1');
+    ctx.commit({$options: {relative: true}}, 'branch1::options', null, false);
+    var branchfrombranch = ctx.branch({$parent: 'author'}, 'node#2|commit#3|branch#2', 'branch2');
+    ctx.commit({$options: {relative: true}}, 'branch2::options', null, false);
+    ctx.switch(branchfrombranch.origin); // back to branch1
+    ctx.switch(branchfrommaster.origin); // back to master
+    ctx.commit({$parent: {author: 'author0'}}, 'node#2|commit#5|master');
+      assert.deepEqual(ctx.head(), ctx.merge(new ResourceNode(), {
+        "$parent": {
+          "author": "author0"
+        },
+        "$root": {
+          "x": 0,
+          "y": 1
+        },
+        "commit": 4,
+        "commitMessages": [
+          "$root|node#1",
+          "node#2",
+          "node#2|commit#1",
+          "node#2|commit#5|master"
         ],
         "origin": "master",
         "revision": -1,
