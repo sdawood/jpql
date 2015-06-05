@@ -862,72 +862,16 @@ suite('jsonpath#query', function() {
 
   test('descendant subscript numeric literal', function() {
     var data = [ '0-0', '1-0', [ '2-0', '2-1', '2-2' ], [ '3-0', '3-1', 3-2, [ '3-3-0', '3-3-1' , '3-3-2' ] ] ];
-    var results = jp.nodes(data, '$..[0,1]');
+    var results = jp.query(data, '$..[0,1]');
     assert.deepEqual(results, [
-      {
-        "path": [
-          "$",
-          0
-        ],
-        "value": "0-0"
-      },
-      {
-        "path": [
-          "$",
-          2,
-          0
-        ],
-        "value": "2-0"
-      },
-      {
-        "path": [
-          "$",
-          3,
-          0
-        ],
-        "value": "3-0"
-      },
-      {
-        "path": [
-          "$",
-          3,
-          3,
-          0
-        ],
-        "value": "3-3-0"
-      },
-      {
-        "path": [
-          "$",
-          1
-        ],
-        "value": "1-0"
-      },
-      {
-        "path": [
-          "$",
-          2,
-          1
-        ],
-        "value": "2-1"
-      },
-      {
-        "path": [
-          "$",
-          3,
-          1
-        ],
-        "value": "3-1"
-      },
-      {
-        "path": [
-          "$",
-          3,
-          3,
-          1
-        ],
-        "value": "3-3-1"
-      }
+      "0-0",
+      "2-0",
+      "3-0",
+      "3-3-0",
+      "1-0",
+      "2-1",
+      "3-1",
+      "3-3-1"
     ]);
   });
 

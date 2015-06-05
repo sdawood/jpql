@@ -80,11 +80,6 @@ suite('jsonGpath', function() {
     ]);
   });
 
-  test('[X] $node == $parent always refers to the previous node, active scripts as template placeholders with branches', function () {
-    var results = jpql.nodes(graphJSON, '({"nodes[\'123\'].profile[name,birthdate[month]]"})');
-    assert.deepEqual(results, [false]);
-  });
-
   test('[X] ActiveScripts can replace a full json path and evaluate and embedded path. Templates in action', function () {
     var results = jpql.nodes(graphJSON, '({"nodes[\'123\'].profile[name,birthdate[month]]"})');
     assert.deepEqual(results, [
@@ -364,7 +359,7 @@ suite('jsonGpath', function() {
   });
 
  test('Retrieve references to nodes with sub query returning single result, retrieve only friend by ID', function () {
-    var results = jpql.nodes(graphJSON, 'nodes["123"][id,profile[name,birthdate[month]],$.nodes[({$quoteAll($parent.friends)})]]');
+    var results = jpql.nodes(graphJSON, 'nodes["123"][id,profile[name,birthdate[month]],$.nodes[({$quoteAll(parent$.friends)})]]');
     assert.deepEqual(results, [
       {
         "path": [
@@ -421,6 +416,66 @@ suite('jsonGpath', function() {
       }
     ]);
   });
+
+  test('Subscript descendant $', function () {
+    var results = jpql.nodes(graphJSON, 'nodes["123"]..[$.nodes[({$quoteAll($parent.friends)})]]');
+    assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "id"
+        ],
+        "value": 123
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "name"
+        ],
+        "value": "user-123-tester"
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "profile",
+          "birthdate",
+          "month"
+        ],
+        "value": 12
+      },
+      {
+        "path": [
+          "$",
+          "nodes",
+          "123",
+          "nodes",
+          "111"
+        ],
+        "value": {
+          "friends": [
+            222,
+            123
+          ],
+          "id": 111,
+          "profile": {
+            "birthdate": {
+              "day": 1,
+              "month": 11
+            },
+            "name": "user-111-popular"
+          }
+        }
+      }
+    ]);
+  });
+
 
  test('Retrieve references to nodes with sub query returning multiple result, retrieve friend by ID', function () {
     var results = jpql.nodes(graphJSON, 'nodes["111"][id,profile[name,birthdate[month]],$.nodes[({$quoteAll($parent.friends)})]]');
