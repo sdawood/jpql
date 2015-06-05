@@ -5,7 +5,7 @@ var _ = require('lodash');
 
 suite('jsonGpath edges', function() {
 
-  test('[Y] parse nested subscript expression with leading simple expression (integer)', function () {
+  test('parse nested subscript expression with leading simple expression (integer)', function () {
     var results = jpql.nodes(data, "$..book[0..[name,rating]]");
     assert.deepEqual(results, [
       {
@@ -503,18 +503,15 @@ suite('jsonGpath edges', function() {
 
   test('[Circular Reference Scenario] parse nested subscript expression with leading active expression ($)', function () {
     var _data = {i18n: {'default': 'english', language: ['english', 'french']}, book: [{english: { description: 'english description'}, french: {description: 'french description'}}] };
-    var results = jpql.nodes(_data, "$.book[*][$.i18n['default'],$.i18n.language.*]"); //$$ references child root node, this specific simple case is equivalent to genereLists[*][name,rating]
+    var results = jpql.nodes(_data, "$.book[*][$.i18n['default'],({$.i18n.language})]"); //$$ references child root node, this specific simple case is equivalent to genereLists[*][name,rating]
     assert.deepEqual(results, [
       {
         "path": [
           "$",
-          "book",
-          0,
-          "english"
+          "i18n",
+          "default"
         ],
-        "value": {
-          "description": "english description"
-        }
+        "value": "english"
       },
       {
         "path": [
@@ -541,9 +538,9 @@ suite('jsonGpath edges', function() {
     ]);
   });
 
-  test('parse nested subscript expression with leading active expression ($) yielding multiple results', function () {
+  test('parse nested subscript expression with leading active expression ($) yielding multiple results (no result expansion)', function () {
     var _data = {i18n: {'default': 'english', language: ['english', 'french']}, book: [{english: { description: 'english description'}, french: {description: 'french description'}}] };
-    var results = jpql.nodes(_data, "$.book[*][$.i18n.language[*]]"); //$$ references child root node, this specific simple case is equivalent to genereLists[*][name,rating]
+    var results = jpql.nodes(_data, "$.book[*][english,$.i18n.language[*]]"); //$$ references child root node, this specific simple case is equivalent to genereLists[*][name,rating]
     assert.deepEqual(results, [
       {
         "path": [
@@ -559,21 +556,40 @@ suite('jsonGpath edges', function() {
       {
         "path": [
           "$",
-          "book",
-          0,
-          "french"
+          "i18n",
+          "language",
+          0
         ],
-        "value": {
-          "description": "french description"
-        }
+        "value": "english"
+      },
+      {
+        "path": [
+          "$",
+          "i18n",
+          "language",
+          1
+        ],
+        "value": "french"
       }
     ]);
   });
 
-  test('parse active script expression with $$ root back reference', function () {
-    var _data = {i18n: {language: 'english'}, book: [{english: { description: 'english description'}, french: {description: 'french description'}}] }
-    var results = jpql.nodes(_data, "$.book[*][({$.i18n.language}).description]");
+  test('[*] splat expanding results of active script expression with $$ root back reference', function () {
+
+    var _data = {i18n: {'default': 'english', language: ['english', 'french']}, book: [{english: { description: 'english description'}, french: {description: 'french description'}}] };
+    var results = jpql.nodes(_data, "$.book[*][({$.i18n.default}),({$.i18n.language}).description]");
     assert.deepEqual(results, [
+      {
+        "path": [
+          "$",
+          "book",
+          0,
+          "english"
+        ],
+        "value": {
+          "description": "english description"
+        }
+      },
       {
         "path": [
           "$",
@@ -583,6 +599,16 @@ suite('jsonGpath edges', function() {
           "description"
         ],
         "value": "english description"
+      },
+      {
+        "path": [
+          "$",
+          "book",
+          0,
+          "french",
+          "description"
+        ],
+        "value": "french description"
       }
     ]);
   });
