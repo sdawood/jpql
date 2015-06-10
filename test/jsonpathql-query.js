@@ -1082,7 +1082,7 @@ suite('jsonpath#query', function() {
   });
 
   test('all books [author,title] via list of subscript expression with first level active slice expression', function() {
-    var results = jp.nodes(data, '$..book[({@.length-3}):({@.length-1}).title,({@.length-3}):({@.length-1}).price]');
+    var results = jp.nodes(data, '$..book[(#slice {@.length-3}):({@.length-1}).title, (#slice {@.length-3}):({@.length-1}).price]');
     assert.deepEqual(results, [
       {
         "path": [
@@ -1128,7 +1128,7 @@ suite('jsonpath#query', function() {
   });
 
   test('all books [title] via single subscript expression with first level active slice expression', function() {
-    var results = jp.nodes(data, '$..book[({@.length-4}):({@.length})[title,price]]');
+    var results = jp.nodes(data, '$..book[(#slice {@.length-4}):({@.length})[title,price]]');
     assert.deepEqual(results, [
       {
         "path": [
