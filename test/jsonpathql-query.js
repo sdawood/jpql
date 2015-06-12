@@ -6,7 +6,7 @@ var traverse = require('traverse');
 var data = require('./data/deep-store.json');
 
 
-suite('jsonpath#query', function() {
+suite('jsonpathQL#query', function() {
 
   test('- leading member', function() {
     var results = jp.nodes(data, 'store');
@@ -1081,8 +1081,8 @@ suite('jsonpath#query', function() {
     ]);
   });
 
-  test('all books [author,title] via list of subscript expression with first level active slice expression', function() {
-    var results = jp.nodes(data, '$..book[(#slice {@.length-3}):({@.length-1}).title, (#slice {@.length-3}):({@.length-1}).price]');
+  test('[ACTIVE SCRIPTS SHOWCASE::ACTIVE SLICE CALL] all books [author,title] via list of subscript expression with first level active slice expression', function() {
+    var results = jp.nodes(data, '$..book[(#slice ={@.length-3}):(*{[@.length-1, 1]}).title, (#slice ={@.length-3}):(*{[@.length-1, 1]}).price]');
     assert.deepEqual(results, [
       {
         "path": [
@@ -1128,7 +1128,7 @@ suite('jsonpath#query', function() {
   });
 
   test('all books [title] via single subscript expression with first level active slice expression', function() {
-    var results = jp.nodes(data, '$..book[(#slice {@.length-4}):({@.length})[title,price]]');
+    var results = jp.nodes(data, '$..book[(#slice ={@.length-4}):({@.length})[title,price]]');
     assert.deepEqual(results, [
       {
         "path": [
@@ -1213,7 +1213,7 @@ suite('jsonpath#query', function() {
     ]);
   });
 
-  test('all books [author,title] via list of subscript expression with first level script expression', function() {
+  test('[X] all books [author,title] via list of subscript expression with first level script expression', function() {
     var results = jp.nodes(data, '$..book[(@.length-2).title,(@.length-2).price]');
     assert.deepEqual(results, [
       {
