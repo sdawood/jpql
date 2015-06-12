@@ -1,0 +1,43 @@
+Mokcing and proxying
+
+provie a declarative structure
+
+path = 'expression.active[map[provider, script, value], reduce.?{@=={}}]
+parsing produces AST
+if data is availabe, we can explore paths
+
+Two use cases
+
+Deep equal: accumulate a boolean flag while traversing within ContextManager, any missing value set to false, commit message should report the miss anyways
+
+Diff: using the path as a blueprint, report results === existing and required === templated difference
+
+Efficiency: mock object or missing (required) object should be constructed in the same pass
+Fancy: use the array of results or required ast to generate a path template with with +=> scripts with dummy or boolean values
+Practical: use the array of results or required path to create the object using jp.value({}, path) for each path component
+
+Transformations
+path -> AST -> Template //(=>{key}):(=>{value}) template replacing all deterministic nodes with active scripts, and leaving .., * nodes as is
+Template -> jpql.nodes({}, Tamplate) -> Stub object (hirarchiecal default dict)
+Template -> jpql.nodes(Observable) -> Stub object (hirearchiecal observables (producing a single value) )
+Reducing Template ({'$'}):(=>{ {} }}).({key1}): (=>{ {} }))[({key2}): (=>{value2})), .({key3}): (=>{value3}))]
+{
+    key1: {
+        key2: {
+            value2
+        },
+        key3: {
+            value3
+        }
+    }
+}
+
+All Template active scripts at each node throw an error if key is missing
+Any Template === results.length ===0
+Diff Template
+Extra Template
+Meta Collecting Template, scripts delegates to node and context Manager
+
+
+
+
