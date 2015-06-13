@@ -1,4 +1,7 @@
 var assert = require('chai').assert;
+var aesprim = require('../lib/aesprim');
+var evaluate = require('../lib/reactaz/example/static-eval');
+
 var defaultdict = require('../lib/defaultdict/read');
 var jpql = require('../index');
 
@@ -7,7 +10,7 @@ var debug_inspect = function(obj) {
   return _inspect(obj, false, null);
 }
 
-describe('jsonpathql#sugar', function() {
+describe('eval-static', function() {
   /**
    *
    * The problem:
@@ -15,12 +18,12 @@ describe('jsonpathql#sugar', function() {
    * Current implementation mixes the logic to interpret the AST (unparse) with the act of delegation to access the data,
    * manipulate a node through contextManager, or do whatever many bad things
    *
-   * A new design would separate the interpretation of the nodes and branches from the logic controlling access to source and abusing the fill access write
+   * A new design would separate the interpretation of the nodes and branches from the logic controlling access to source and abusing the full access write
    * secretly.
    *
-   * Data access would be through filters
+   * Data access would be through proxies
    *
-   * Data would provide tazpath
+   * Data would => provide tazpath (.nodes(data, '$..*') to explore)
    * Interpreter would require each path as it walks it
    *
    * The text below include experimental filter, active and anchor tags
@@ -84,7 +87,46 @@ describe('jsonpathql#sugar', function() {
    *
    *
    * */
-  it('test if object satisfies structure (future, generate orderly json schema)', function () {
+  it('[X] warm up', function () {
+    var script = 'foo(5)',
+      ast = aesprim.parse(script);
+    var results = evaluate(ast.body[0].expression, {foo: function (i) {
+      return i * 1000
+    }});
+    assert.equal(results, 0);
+  });
+
+  it('[X] test if static eval can interpret assignment @["youHaveBeenAccessed"] = true;', function () {
+    var ast = require('../lib/reactaz/example/ecmascript-ast');
+    var evaluate = require('../lib/reactaz/example/static-eval');
+    var target = {};
+    var results = evaluate(ast.body.expression[0], {'@' : target});
+    assert.equal(target["youHaveBeenAccessed"], true);
+  });
+
+  it('[X] full speed ahead', function () {
+    var script = 'true; x["youHaveBeenAccessed"] = true; x;  list = [1, 2, 3]; list; obj = {key: true}; obj; 3 + -2; x.key = false; x.key? obj.key : "Not Available"; foo(5);',
+      ast = aesprim.parse(script);
+    var expressions = jpql.nodes(ast, '$..expression'); //what if nodes returns an array of node observable, or promises
+    var results = expressions.map( //that can be individually mapped by interpreter
+      function(expression) {
+        console.log(expression);
+        expression.provider = expression.value;
+        expression.value = evaluate(expression.provider, {
+          x: {},
+          foo:  function(i) { return i*1000 }
+        });
+        return expression;
+      });
+    assert.equal(results, ast);
+  });
+
+});
+
+describe('react-az', function() {
+
+
+  it('[X] test if object satisfies structure (future, generate orderly json schema)', function () {
     var component = {
       "expression": {
         "active": {
@@ -107,4 +149,16 @@ describe('jsonpathql#sugar', function() {
     var ast = jpql.parse(path);
     assert.equal(results, ast);
   });
+
+  it('[X bootstrap] member expression access', function () {
+    var data = {x: 'x-value'}
+    var raz = require('../lib/reactaz/interpreter');
+    var ast = jpql.parse('$.x')
+    var results = raz(ast, subject)
+    var path = 'expression.active[map[provider, script, value], reduce.?{@=={}}]';
+    var ast = jpql.parse(path);
+    assert.equal(results, ast);
+  });
+
+
 });

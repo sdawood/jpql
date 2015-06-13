@@ -92,8 +92,8 @@ suite('jsonGpath', function() {
     ]);
   });
 
-  test('ActiveScripts can replace a full json path and evaluate and embedded path. Templates in action', function () {
-    var results = jpql.nodes(graphJSON, '({"nodes[\'123\'].profile[name,birthdate[month]]"})');
+  test('ActiveScripts can replace a full json path and evaluate and embedded path. Templates in action == mapper script with nested path', function () {
+    var results = jpql.nodes(graphJSON, '(=>{"nodes[\'123\'].profile[name,birthdate[month]]"})');
     assert.deepEqual(results, [
       {
         "path": [
