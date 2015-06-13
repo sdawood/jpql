@@ -123,6 +123,28 @@ describe('eval-static', function() {
 
 });
 
+describe('active tags', function() {
+  it('warm up, exercise evalActiveScript', function () {
+    var evalActiveScript = require('../lib/scripts').evalActiveScript;
+    var ContextManager = require('../lib/context').ContextManager;
+    var ctx = new ContextManager();
+    var path = '(#name =>{"it works"}):(#upperCaseName =>{"IT WORKS"})';
+    var ast = jpql.parse(path);
+    var component = ast[0];
+    var value = evalActiveScript({}, component, ctx);
+    assert.deepEqual(value, "IT WORKS");
+
+  });
+
+  it('[X] options.tags === true, returns {results, tags}', function () {
+    var path = '(#name =>{@.name}):(#upperCaseName =>{@@.toUpperCase()})';
+    var ast = jpql.parse(path);
+    providers = jpql.nodes(ast, '..[map, reduce].provider', {activeTags: true}).tags.$name;
+    assert.deepEqual(providers, [false]);
+
+  });
+});
+
 describe('react-az', function() {
 
 
