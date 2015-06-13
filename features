@@ -1,0 +1,299 @@
+
+WEBSITE BANNER
+
+DATATAZ
+
+built on DATAREGEX Technology
+
+Story:
+Sometimes an idea persists on demanding your attention.
+A little or big things that needs to be built. It keeps revisiting you every few years it goes unimplemented, and instead of slapping your around with a big trout for wasting time, it expresses itself in a new, captivatingly beautiful and wisely simpler forms that eventually succeed to get your deficient attention.
+
+What you do with this gift, from that point on, is what defines you.
+
+I gave it a shot one weekend in 2006 but I was to busy to see what I had in front of my nose. And Java was not sexy enough to perfrom a pleasing dance show. The idea for an active, JAVA as DSL declarative recipes for data extraction, drinking from the firehose of cryptic messaging was too expensive to explore. or J2ME was ready neither to absract the data ticker.
+
+I got an assignment to implement something crazy and silly and everyone else doesn't want to even touch it, but it was brilliant and it felt familiar, so I worked on it for a couple of days, and got really frustrated by the limitations of a Regex to parse data of all sorts and shapes, and that was the boss's requirement for small footprint. I got frustrated, and was naturally pulled to other projects out of this time-wasting toy proof of concept. And the concept went unproven.
+
+Did a basic integration of google apps, forms, spreadhseet, and the amount of code to pack and unpack data was mundane, but the result was cute.
+
+Data API Shells, don't exist. What are the commands to navigate the data directory?
+
+tried to ceate a data shell, milked a python for pythonic was to intercept and manipulate data modifications and access, python was a good fit, I felt productive and inspired that I generated an SDK for our company's not-so-RESTful XML REST API by extracting information from the WSDL, parsing XML from JavaDoc urls, and the whole thing was IPython sexy within 3-5 weeks, and it made me look smart and productive, wirting those boiler plate python scripts to cal some endpoint clients hoping I'm manipulating some remote data. But it worked, and it was fun to implement and I would do anyting to avoid going through the pain of handling XML:XNS through a cycle of XML to python objects, and back. But that is all history.
+CROSST.AG
+Then I proposed an initiative to work on an external agent, that would pull down and export of a non-trivial XML document, converting to json, do some looping and hooping and produce an output that matches an undefined, undocumented schema using mapping rules that their own existance is a mystery, or they were lost when the author was lost to the market place or other similar ways to bring forward the end of an unlived life. anyways, it failed, or I pulled the plug, and dropped the towel, and acted as if I'm conciously pivoting from a non fruitful exercise, while I was aching with frustration of not finding the tools or the time and Java Script knowledge to pull a rabbit out of my repo.
+
+So I decided to get better at java script, see what's there, Flux, React, Angualr1 MVC is Back, Falcor: pending and narrowly specialized, Graphql and Flow: pending and specialized
+jsonstream, json stream filter, jsonselect(*), jsonpath, jsonpath object transform, jsonpath, Rx, jsonpath, falcor pegjs. blip, jsonpath pegjs with a taste of what's possible, jsonpath jison, new Github Username, jsnpath jison plus, domains, abort, jsonpath object transform plastic surgery, abort, jsongpath parser, jsonpathql, jsonpathql-parser, jpql, relax constraints, add convineice, Lex, Bison, domains, to npm or to not npm, is it related to the original thinng or is it just my first and second npm packages, what was the original thing I'm missing, I can even remmeber, I'm dreaming about Regex, about Rx, loop, path components, unions, union of unions, Branches, hell break loos, refactoring, nope, abort, nope, refactor, utility, functional, refactor, jpql graph features, static eval scripts and filters, grrr, only if I can do more, and pass a context around, deep coda, context, frustration, deep coda, context working, zooooooooooom, crosstagjs domain, and package functional, scripts are limited, Regex, dream about groups of one or more, The Real Active Script, Active Filter, can it be templated?, script tags, data tazzzzzzzzzzzzz.
+
+Data sources for wearables you say?
+
+Data Buttons, data keychains, Apple Watch Native Support you say?
+
+Taz for Humanity
+
+Taz for charity, used cloths, wasted food, shelters, a Taz can save a life, spread the good news
+
+Christian crosst.ag, bible study and verses sharing Taz powered website
+
+
+
+CR@$$T.AG
+
+$ashing on the #tagged data
+- we also provide $path and #tag caching
+
+Live version API data streams on the fly using require/provider building blocks, Concat, Merge, Map, Filter, Subscribe to updates from the resulting Data Taz Source
+Pipe it further for a richer view of the world
+
+In a linked data world, you should be able to create a widget that shows your friends who have a birthday today that you can stick anywhere, no?
+
+= display five freinds who have birthdays today, get their birtday from their facebook profile, or may be their google plus.
+How to make sense of the returned value, hmmm, let's use that crosstag I installed the other day from schema.org to parse dates!
+Or may be I'll look on github, may be someone has declared a tag that does what I need
+= urls to be used as the tag string $.friends.? @(5) ($birthday===Date.today()): (@(1) {[@$.facebook.profile.birthdate, @$.googleplus.profile.birthdate])}:(#http://crosst.ag/schema.org/person/birtdate/day =>{@})
+
+/**
+* the script used as an argument to a filter or a map script is a provider, the #tags are capabilities that it can provide, currently one tag
+* leading filter or map scripts are require scripts, they use the context and injected capabilites to satisfy the requirements
+*/
+
+Or may be I'll look on github, may be someone has declared a tag that does what I need, uh, wait a minute, how silly of me, garphtag.com has a free T.@$ (TAZ)
+$.friends.? @(5) (#http://datataz.com/schema.org/person/birtdate/day.taz =>{@})
+
+data.taz scripts can be hosted publically on datataz.com and affeliates and used freely or with a fee
+or users can subscribe to have a privatedatataz.com and rent taz componets for their projects or LEGO visual widgets
+
+devops taz are a collection of data collection and crunshing taz for data sources including leading opensource devops and application performance analytices tools
+
+crosstagjs is a rereference implementation of local json based, sync/async datataz
+
+datataz itself is a datataz, since it accepts a path and retuns data
+
+data.taz scripts can be as simple as the path string, or as complex as a transplier that transforms jsongpath string into cypher query require scripts that depends on a cypher provider module that is configurable to extract data from your Neo4J backend and provide analytics to the users in their Custmor Data Taz
+
+Business can give away free tokens, keychains and home buttons to either send feedback or receive updates on offers, offers are declared as data.taz require/provider pairs and are pushing to the users asynchronously
+
+Data Taz
+Write: Order, Refill, pay pills from accounts based on policies and rules, ...
+Read: Receive information on demand
+Stream: Receive Push notifications with embedded Taz Forms for quick turn around
+Merge: mix and match your taz require/provider modules as you would do with node.js streams or Rx.Observable, run the merge temporarily, or seal the deal till death, chose to save, publish or create a merge Template as valuable side product documenting the learning process, with versions and merge messages, explaining how this version of the data came to be.
+
+Some data taz streams are clear, and some are encrypted, some data taz have an expiry attached by the source, and can listen to a provider for updates on their own member Taz
+Other sources are secured, and would require authentication information to be supplied to the script bot for the target #actionRequiresLogin Data Taz
+
+
+
+
+= the birthday data of the friend at hand is formatted by the crosstag script
+
+
+
+      TAZ THIS -> TAZ THAT
+      tazthis.com is a place to package data in tazbits and pushli to the taz store or npm for public taz
+      tazthis provides this, and declares what you get, along with default throttling, take and push capabilities for each  $taz script included
+
+      this is data path, all declared and packaged up with params and ready to go, consumers would love tazthis
+
+      tazthat.com is a place to declare needs for tazbits to build a taz or a generic software component
+      that chose to declare its data needs and capablities in datataz open path format
+
+      '$..category.sorted.(#description =>{"Movie Category: {@.name, @,rating}"}).(@(1000)).(#throttle =>([$login($username, $password), $taz(this), $register(this, 100s)]))
+      Implementation should bind the #throttle default input pipe to $throttle, no special pribvilages to any bit
+      taz node context is bound to this variable.
+      $taz(s) (Tagged Scripts) are the only way to get to other pipes declared by the TAZ, permission TAZ and grant TAZ apply to the $taz scripts and sift through them only letting the allowed ones to be used by the script run by the user
+      User has to declare intents in Datataz.demand file and publish to the taz store,
+      In this example, Taz provides default pipe #throttle, and alternative actions to $login, $taz, and $register
+      $login is called with variables $username and $password
+      The taz has attempted access to the hirearchical keyvalue map and retreived user's login information for the datataz#throttle provider, and tazbits (paths) pointing to them are granted access to the data store holding user's #datataz service
+      if login information exists, a pipe is started, from login.concat(taz).concat(register)
+      flow will progress down that path
+      $taz script is another trait provided by the #throttle taz
+      $taz can  accept a taz object, in this case we pass it the context Taz, what is the symbol for the context Node?
+      $taz(this) is the mantra
+      the end result is a pipe that consumes the original tazbit provider advertized action assciated with the path:
+      #netflix.genereLists.movies.categories that is available under its own permissions, reading the sorted description
+      and annotate it as dezired (a place for template magic) and register this taz to run this path (captured from the context) every 100 seconds, to get a freshly mapped tazbits
+
+      tazbit is a data source annonated with declarative datataz path
+      reader of the tazbit can subscribe to whatever the want from the advertized paths
+      while the reader is playing back throug the path, actions present themselvs, and consumer can filter down to the smallest tazbit (string or character level) and output it to the callers application code.
+
+      @(n) specifies how many times to run the taz script, default is a one off relationship, with no streams attached.
+      multiple takes would subscribe the particular tazbit (node context is bound to this) and if path is used, a declared dependency on a 3rd party tazthis provider, or owner application's own data stores, the taz script url spcifies the
+      hirarchy of path and their respective provider
+      npm is ideal for packacing up a tazscript, with automatic dependancy identification by a simulated dry run that
+      generates an uptodate package.json with all depdencies declared.
+      the dry run invokes all included taz scripts, and a unit test runner is ideal to simulate the behavior.
+      Generates test cases to go into your datataz repo to show credibility, only revisions passing the CI integration are sellable or rentable or even publishable for free.
+
+      activetazcript.com is a store for componentized active script tazbits, in generic raw form
+      on contrary to tazthis and tazthat that show a prepackaged all baked in (without hiding the declarative demands or supplies), activetazcript is npm for datataz
+
+      thitazcript provides data and is indicated by => operator, it can provide data via an expression, or by calling on to
+      one of the thitazcripts from its dependancies
+
+      POST +=> adds the retreived data in place and makes it available to other thitazcripts or thattazcripts, optionally caches data
+      PUT ==> updates data, set to objeccts, pushes to arrays and replaces literals
+      ADD OR UPDATE ~=>
+      DELETE -=> invalidate cache and removes local copy
+      PUT merge &=> merges data into existing version
+
+      path starting with =>$ are provider blueprints
+      path starting with =$ are consumer blueprints
+
+      both types use the other type freely internally to produce context calculated data or consume a dependancy along the execution unfoldin
+
+
+      thattazcript consumes data provided locally or by thitazcripts and can be of type
+
+      = for single receiver
+      * for multiple end point receivers
+      #thattazcript & declares that it is mergeable with #that other tazcript
+      - is a sink hole, muted point, @(timeout), effectively a pause
+      + (default) mocks, or produce its own data using an expression or resume a named #tazcript
+
+
+      filters are constrol mechanizms, an upgraded pipe connection
+      what's special about it is how the implementation excutes it
+
+      * filters producing splat results, possibly by filtering on multiple sources
+      - sink hole, pause filter
+      + resume or register a new active filter
+      = assigns the results of the filter to the partial as a => data source
+
+
+
+
+
+
+Why use in local development?
+it's a keyed store for versionable data access interception, Observables, Promises, ES6 compliant, if you are going to use one anyhow, give your data bits a tag, tag bits are worth coins.
+
+Education and Training
+What is a form? a demand for a set of strictly specific fields of specific type, lack of type information in scripting languages is not adding value, and another layer is required for validation, while a mismatch should be declarative all the way.
+What do you call the other half of the nickless, a form demands and a datataz supplies, and demands further information since we got it's interest.
+
+Piping data around .*[{}].({})(#@{}):(=>{})[$.@[*],$@.@]
+Advertize need for an answer and structure question search by contexts and user historical data
+
+Dedate, track versions of a conversations, ever wished to take something you said back, well you can't.
+
+Structured Chat
+
+Structured Professional Feeds
+
+News
+
+Publishing BackEnd
+
+Backend by Neo4j via jsonpath Cypher transipler and a controlling data taz faucet at the end of that pipe.
+
+Profiling, Mocking, Testing, RBAC and data policies, graph delegation of access levels, logging, a recipe for a template, configuration files io, rest client, async data source, backend data source for a front ent custom widget, data taz widgets, you chose.
+
+API Security by applying static anylisis on paths
+Getting down to the T with Data
+Talking the data the last mile, from the structured document back to where it all started, the word.
+Dataregex
+MicrosServices orchasteration
+OpsDev,
+
+=============================================================================================
+features
+
+Parser:
+ASSERT that strings can carry schema.org urls
+
+GRAPHQL
+- spaces
+- graphql curley braces for more natural json feeling
+- graphql node and function call ( selecting the object or performing a transformation on the node before it gets returned )
+- graphql subscript identifier (without quotes)
+- graphql nested subscript expressions
+FALCOR
+x   - range syntax .. and ... collide with DOT DOT in jsonpath, use slice instead.
+- falcor leading subscript member expression to manipulate root node(s)
+- falcor true, false, null, undefined support
+- falcor path parser identifier and literals unicode support
+
+
+JSONPATH
+- jsonpath slice, with step
+- jsonpath DOT numerica_literal
+- jsonpath DOT DOT decendant operator
+- jsonpath START wildcard child or decendant operator
+x   - $ can be used anywhere, and it will reference the root
+x   - path can start with path_component (enables falcor style)
+
+JSONG-PATH
+@   - $ can be used anywhere, and it will reference the root
+- jsonpath in scripts  - $ is injected into scope of script expression and filter expression, @$ = immidiate parent of the partial, @$$ = two levels up, @$$$ = thre levels up ...
+- expressions can use a jsong path to make a decision based on another node's value path surrounded by {} for example: (now() - {$..timestamp} < 60)
+- nested subscript expressions with leading INTEGER,STRING_LITERAL,ARRAY_SLICE
+* Usage Note: the nested subscript expression with leading component is best demonestrated in handling legacy API responses with bags of assorted data records each with own property set
+- list of subscript expressions with STAR,SCRIPT_EXPRESSION,FILTER_EXPRESSION
+- member and descendant CRIPT_EXPRESSION,FILTER_EXPRESSION
+- RegularExpressionLiteral can be used as a script expression to select keys or as a filter expression to filter "string" (Leaf only) values
+* - example, use in test cases to retreives methods by descendant path
+QUEENS BIRTDHAY FEATURE (*{}) - active script starting with a splat '*' would have it's array results expanded in place
+QUEENS BIRTDHAY FEATURE add: (+key{}), add is special because the script would have to provide a key for the new child to be set into the current partial
+QUEENS BIRTDHAY FEATURE set: (={}), addOrUpdate (~{}), delete: (-{})- inside a script expression, if the first letter is +, the value of the expression is added to the object at the $parent node, a script starting with a "-",
+options.permissios would allow add, delete, update, delete pops the node key if or nullifies the value according to options. PERMISSIONS are platinum feature. and are a great asset in mock tests where using permission and update event notifications an object can be used as a mock. This test plugin framework would facilitate a more intutive tool to build tests for jsongpath itself
+QUEENS BIRTDHAY FEATURE mapping expressions (=>{}): modified values can be passed in or evaluated as a map function using +(), the handler strips out the +() and use the expression result as a return value for map function, example: '$.nodes..[(+($key=="name" ? value.toUpperCase() : value))]'
+- QUEENS BIRTDHAY FEATURE - in the automatically built model object, keys will be automatically assigned to the same value from data, for scripts,
+- QUEENS BIRTWEEK FEATURE - use standalone angular epression evaluator to allow for structured piping and filtering, with flexible support for argument passing, arguments passed to the filter from the reduce script would be splatted and injected into the angular epression evaluator execution context.
+
+- CRAZY * in data crawler mode, each new "node" can either aeagerly ccept the context passed along from the $parent, or chose to callback to the $parent to provide a fresh copy of its context at a later stage in time. Allow for lazy nodes with no persistat state. Since the lazy node would only have to store the expression, and the $parent url without the need to copey the complete scope, incliding blobs of data and "code" (distribute lambda functions to nodes using a path that + the lambda function in the node's function registry)
+* CRAZY * if the lex ruls section in jison is replaced by a rules module that matches on json data and jsongpath components, the jison should be able to build a parser to apply
+jsongpath component rules expressed in BNF form extracting data from a json blob jpex (json path expression) or jslex for json lexical analyzer
+* Mark object that we have retreived all data ..* as 'complete'
+- ASYNC: choose which components in a branch to subscribe to updates from [name,(@{purchases}), branches with multpile async sources are merged into on observer
+COOL: parser add symbol to component to represent a visual type, for example subscript descendant union => "..[,]" or Show case mapping scripts mapping the old style component array into visual representation
+
+ASSUME THE ROLE OF A NODE
+Authorized clients can get to a node using it's jpqlpath, and perform a set of actions on the node:
+- While the role shapeshifter uses the management interface of a node, it executes with higher premission than admin, owner only can override node's behavior
+- $pause(source, in, out): batch pause/unpause
+- $pause(false, false, false) == resumeAll()
+- $pause() == pauseAll, stops pulling own source data@path, stops listening to incoming streams, pauses outgoing streams
+- @pause, pauses listening to incoming streams
+- =>pause, pauses ougoing streams
+- stream implementation can chose to implement pausable handlers or return a null value a friendly message explaning that the traint is not available.
+- set data using an active script, either a one off content or a source (can be a repeater of a static message )
+- inspect current require/provide streams, and switch the piping around, with optionally applying structure matching filters, or regex filters
+- assume control over single stream, and apply stream operations on it
+- clone or dublicate streams
+- replace a current stream by a freshly backed aggregated taz that satisfies the data interface
+
+DATA TEMPLATE Language
+- a jsonpath with operation active scripts represents a collection of retreived, computed and required data
+- a jsonpath with all it's paramteres templated is a moving target for the data snippt
+- replacing symbols $ . .. [,] * () ?() ({}) with keywords creates the Path(TM) language
+Y - allow template ${} refs and path to be used for value
+Y - allow a jsonpath producing a single literal as key tamplate
+****** GENERATE JSON SCHEMA - THE LINK INTO STRCUTRED DATA *********
+jsonpath emits orderly js http://orderly-json.org/ that can be compiled into json schema for use by strict datat@#z action points
+
+THE DATA PATH EDITOR
+- live render path results starting from a data source
+- context tag paths are rewrtien to absolute uris http://crosst.ag/user/project_maps1/maps1/session guide/path id/absolute path
+- instantiate a model that states collecting tags and subscriptions and visualise the elements in the subgraph view as they are received (trhottling)
+- WIDGETS are crosstag widgets, the declare the required paths and asyc retreive values from the provider, falcor backend can provide basic functionality as a POV
+- caching can be designed and simulated dynamically and cache behaviour defining paths on(data, path defining element to apply retention and security ploicies to)
+- - CRAZY * tag IFFT data sinks and design API requests and responses with the embedded paths template
+
+BLUEPRINTING
+- share a jsonpath, replace user specified keys with templates (partial data forms)
+- share a jsonpath along with sample (rendering) data to create a template with intuitive placeholders and type checking
+
+INTEROPERATION with JSON
+- Use a jsonpath object transform like template with values consisting of jsongpaths
+
+
+Handlers:
+- falcor paths enumeration ( ready to batch transmission )
+- falcor return Observables
+- Model reconstructs object from paths? or build from parsing tree?
+- TOSCA support for partial templates
+-
