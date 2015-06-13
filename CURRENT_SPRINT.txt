@@ -1,0 +1,27 @@
+
+1. TazScript
+
+/*
+  REACTAZ (Resource Active Tags) or just call me "raz"
+   ^
+  10   Meet Reac Taz
+   9
+   8        ^   ^
+   7       (@) (#)
+   6          $
+   5      <=-...+=>
+   4
+   3         ><
+   2        DATA
+   1        TAZ
+   0 1 2 3 4 5 6 7 8 9 10 $*/
+
+/* That's it, this is my demo */
+
+
+1. use existing jsonpath index and handlers imparative wiring for a little bit longer
+2. implement ActiveScript standalone
+3. implement ActiveFilters standalone
+3. wire them into existing logic to take them for a spin, before using and abusing them to build the Declarative Data Parser (ReactAz)
+
+
