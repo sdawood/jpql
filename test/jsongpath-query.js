@@ -353,8 +353,8 @@ suite('jsonGpath', function() {
     ]);
   });
 
- test('Retrieve references to nodes with sub query returning single result, retrieve only friend by ID', function () {
-    var results = jpql.nodes(graphJSON, 'nodes["123"][id,profile[name,birthdate[month]],$.nodes[({$quoteAll($parent$.friends)})]]');
+ test('[X builtins are rootTags ] Retrieve references to nodes with sub query returning single result, retrieve only friend by ID', function () {
+    var results = jpql.nodes(graphJSON, 'nodes["123"][id,profile[name,birthdate[month]],$.nodes[(#quoteAll{$parent$.friends})]]');
     assert.deepEqual(results, [
       {
         "path": [

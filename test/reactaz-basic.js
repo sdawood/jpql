@@ -127,12 +127,12 @@ describe('active tags', function() {
   it('warm up, exercise evalActiveScript', function () {
     var evalActiveScript = require('../lib/scripts').evalActiveScript;
     var ContextManager = require('../lib/context').ContextManager;
-    var ctx = new ContextManager();
-    var path = '(#name =>{"it works"}):(#upperCaseName =>{"IT WORKS"})';
+    var ctx = new ContextManager(null, null, jpql); //rootOptions, meta, reader
+    var path = '(#name =>{"it works"})';
     var ast = jpql.parse(path);
     var component = ast[0];
     var value = evalActiveScript({}, component, ctx);
-    assert.deepEqual(value, "IT WORKS");
+    assert.deepEqual(value, "it works");
 
   });
 
