@@ -25,30 +25,36 @@ describe('context manager', function() {
     }));
   });
 
-//  it('should increment commit# with every commit', function () {
-//    var ctx = new ContextManager();
-//    var commitFeed = Rx.Observable.ofArrayChanges(ctx._branches['master']);
-//    var subscription = commitFeed.subscribe(
-//      function(next) { console.log('commitFeed', debug_inspect(next));},
-//      function(err) { console.log('commitFeed', err);},
-//      function() {console.log('commitFeed', 'completed');}
-//    );
-//    ctx.commit({$root: {x: 0, y: 0}}, 'commit#1');
-//      assert.deepEqual(ctx.head(), ctx.merge(new ResourceNode(), {
-//        "commit": 1,
-//        "commitMessages": [
-//          'commit#1'
-//        ],
-//        "origin": 'master',
-//        "revision": -1,
-//        "revisionTags": [],
-//        "version": -1,
-//        "versionTags": [],
-//        $root: {x: 0, y: 0}
-//      }));
-//      done();
-//      subscription.dispose();
-//  });
+  it('should commit options and meta tags', function() {
+    var jpql = require('../index');
+    var ctx = new ContextManager();
+    ctx = ctx.configure({testOption: '$@ === 42'}, {testMate: '42 === $@'});
+    assert.deepEqual(jpql.nodes(ctx.head(), '..[meta.*, options.*]'), [
+      {
+        "path": [
+          "$",
+          "meta",
+          "location"
+        ]
+      },
+      {
+        "path": [
+          "$",
+          "meta",
+          "testMate"
+        ],
+        "value": "42 === $@"
+      },
+      {
+        "path": [
+          "$",
+          "options",
+          "testOption"
+        ],
+        "value": "$@ === 42"
+      }
+    ]);
+  });
 
   it('should increment version# with every node', function () {
     var ctx = new ContextManager();

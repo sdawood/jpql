@@ -139,8 +139,10 @@ describe('active tags', function() {
   it('[X] options.tags === true, returns {results, tags}', function () {
     var path = '(#name =>{@.name}):(#upperCaseName =>{@@.toUpperCase()})';
     var ast = jpql.parse(path);
-    providers = jpql.nodes(ast, '..[map, reduce].provider', {activeTags: true}).tags.$name;
-    assert.deepEqual(providers, [false]);
+    jpql.configure({activeTags: true});
+    var results = jpql.nodes(ast, '$..active[map.(#isMapProvider{"provider"}), reduce.(#isReduceProvider{"provider"})]');
+//    var results = jpql.nodes(ast, '$..active[map.provider, reduce.provider]');
+    assert.deepEqual(results, [false]);
 
   });
 });
