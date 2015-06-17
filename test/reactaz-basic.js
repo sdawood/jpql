@@ -1,6 +1,6 @@
 var assert = require('chai').assert;
 var aesprim = require('../lib/aesprim');
-var evaluate = require('../lib/reactaz/example/static-eval');
+var evaluate = require('../lib/ligula/example/static-eval');
 
 var defaultdict = require('../lib/defaultdict/read');
 var jpql = require('../index');
@@ -97,8 +97,8 @@ describe('eval-static', function() {
   });
 
   it('[X] test if static eval can interpret assignment @["youHaveBeenAccessed"] = true;', function () {
-    var ast = require('../lib/reactaz/example/ecmascript-ast');
-    var evaluate = require('../lib/reactaz/example/static-eval');
+    var ast = require('../lib/ligula/example/ecmascript-ast');
+    var evaluate = require('../lib/ligula/example/static-eval');
     var target = {};
     var results = evaluate(ast.body.expression[0], {'@' : target});
     assert.equal(target["youHaveBeenAccessed"], true);
@@ -176,7 +176,7 @@ describe('react-az', function() {
 
   it('[X bootstrap] member expression access', function () {
     var data = {x: 'x-value'}
-    var raz = require('../lib/reactaz/interpreter');
+    var raz = require('../lib/ligula/interpreter');
     var ast = jpql.parse('$.x')
     var results = raz(ast, subject)
     var path = 'expression.active[map[provider, script, value], reduce.?{@=={}}]';

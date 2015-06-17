@@ -20,10 +20,10 @@ var assert = require('chai').assert;
 var data = require('./data/deep-store.json');
 var _ = require('lodash');
 var ContextManager = require('../lib/context').ContextManager;
-var _provides = require('../lib/reactaz/tagspm_modules/builtins/provides');
+var _provides = require('../lib/ligula/ligulapm_modules/builtins/provides');
 var MemorySubject = _provides.MemorySubject,
   RequirementProvider = _provides.RequirementProvider;
-var unparse = require('../lib/reactaz/tagspm_modules/builtins/datacodegen').unparse;
+var unparse = require('../lib/ligula/ligulapm_modules/builtins/ligulagen').unparse;
 
 
 suite('builtins#snapshot#mocking - not reconstructing branches', function() {
@@ -101,24 +101,114 @@ suite('builtins#snapshot#mocking - not reconstructing branches', function() {
 
   test('#levels is as good as it gets, used by builtins#unparse: tag a selective snapshot of an available source of data, and reconstruct it in your own scope', function () {
     var jpql = require('../lib/index');
-    var source = { R: ['R'], e: {a: ['a'], '[T]': ['[T]'],  junk: ['$#%^&#!@#$']},
-      ".": {a: {z: ['Data Tags']}},
+    var source = { R: 'R', e: {a: 'a', '[T]': '[T]',  junk: '$#%^&#!@#$'},
+      ".": {a: {z: 'Data Tags'}},
       w: [
         { w: { w: {name: "ReacTaz"}}},
         "w1"
       ], junk: '$#%^&#!@#$'};
     var snapshotpath = '$[R, e, e[a, "[T]"], ["."].a.z, w[.w.w.name], w]'; //@todo #takeAll activeScript Tag to get leaf or node.*, in this example we had to know that x, y are keys with simple values
     var flatResult = jpql.nodes(source, snapshotpath);
-    assert.deepEqual(flatResult, [{"value":["R"],"path":["$","R"]},{"value":{"a":["a"],"[T]":["[T]"],"junk":["$#%^&#!@#$"]},"path":["$","e"]},{"value":["a"],"path":["$","e","a"]},{"value":["[T]"],"path":["$","e","[T]"]},{"value":"ReacTaz","path":["$","w",0,"w","w","name"]},{"value":[{"w":{"w":{"name":"ReacTaz"}}},"w1"],"path":["$","w"]}]);
+    assert.deepEqual(flatResult, [
+      {
+        "path": [
+          "$",
+          "R"
+        ],
+        "value": "R"
+      },
+      {
+        "path": [
+          "$",
+          "e"
+        ],
+        "value": {
+          "[T]": "[T]",
+          "a": "a",
+          "junk": "$#%^&#!@#$"
+        }
+      },
+      {
+        "path": [
+          "$",
+          "e",
+          "a"
+        ],
+        "value": "a"
+      },
+      {
+        "path": [
+          "$",
+          "e",
+          "[T]"
+        ],
+        "value": "[T]"
+      },
+      {
+        "path": [
+          "$",
+          "w",
+          0,
+          "w",
+          "w",
+          "name"
+        ],
+        "value": "ReacTaz"
+      },
+      {
+        "path": [
+          "$",
+          "w"
+        ],
+        "value": [
+          {
+            "w": {
+              "w": {
+                "name": "ReacTaz"
+              }
+            }
+          },
+          "w1"
+        ]
+      }
+    ]);
     var pocMock = {};
     assert.deepEqual(unparse(flatResult, pocMock, '#level'), {
-      "x": {
-        "yy": {
-          "z": {
-            "name": true
-          }
-        }
-      }
+      "R": [
+        true
+      ],
+      "e": [
+        true,
+        [
+          "a"
+        ],
+        [
+          "[T]"
+        ]
+      ],
+      ".": {"a": {"z": [true]}},
+      "w": [
+        {
+          "0": [
+            {
+              "w": [
+                {
+                  "w": [
+                    {
+                      "name": [
+                        true
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        [
+          true
+        ]
+      ]
     });
     pocMock = unparse(flatResult, null, '#level');
     assert.deepEqual(pocMock, {
