@@ -2,39 +2,50 @@
   "name": "jsonpathql",
   "description": "jsonpath query language engine",
   "version": "0.0.1",
-  "author": "shaady@sdawood.com",
+  "author": "shaadydawood@gmail.com",
   "scripts": {
-    "test": "mocha -u tdd test && jscs lib && jshint lib"
+    "test": "npm run eslint && jest --verbose",
+    "build": "babel --copy-files --out-dir lib --ignore *.spec.js src",
+    "eslint": "./node_modules/.bin/eslint src --quiet"
   },
   "dependencies": {
+    "babel-plugin-transform-builtin-extend": "^1.1.2",
+    "babel-runtime": "~6.23.0",
     "esprima": "^2.2.0",
     "lodash": "^3.9.1",
+    "rx-array": "0.0.3",
     "static-eval": "0.2.3",
     "traverse": "^0.6.6"
   },
   "devDependencies": {
-    "chai": "^2.3.0",
-    "jscs": "1.10.0",
-    "jshint": "2.6.0",
-    "mocha": "2.1.0"
+    "babel-cli": "~6.24.0",
+    "babel-eslint": "^7.2.1",
+    "babel-plugin-transform-object-rest-spread": "~6.23.0",
+    "babel-plugin-transform-runtime": "~6.23.0",
+    "babel-preset-env": "~1.2.2",
+    "eslint": "~3.18.0",
+    "jest": "~19.0.2"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/sdawood/jsonpathql"
   },
   "keywords": [
-    "jpql",
+    "jpql-parser",
     "JSONPath",
     "jsonPath",
     "jsonpath",
     "json-path",
     "object",
     "traversal",
+    "extended",
     "json",
     "path",
     "data structures",
+    "transformation",
     "graphql",
-    "jsong"
+    "jsong",
+    "jsongraph"
   ],
   "license": "MIT"
 }
